@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: kargo
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: kube-devops
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: ghcr.io/akuity/kargo-charts
+      chart: kargo
+      targetRevision: 1.8.6
+      helm:
+        valueFiles:
+          - $values/kargo/eu-central-1/values.yaml
+    - repoURL: git@git.janis-eccarius.de:NowChess/Gitops.git
+      path: ./kargo/eu-central-1
+      ref: values
+      targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

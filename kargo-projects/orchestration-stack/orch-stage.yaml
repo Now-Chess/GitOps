@@ -1,0 +1,55 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: kargo
+  annotations:
+    kargo.akuity.io/color: red
+spec:
+  vars:
+    - name: imageUrl
+      value: oci://ghcr.io/akuity/kargo-charts/kargo
+    - name: argoName
+      value: kargo
+    - name: chartName
+      value: ""
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: kargo
+      sources:
+        direct: true
+        autoPromotionOptions:
+          selectionPolicy: NewestFreight
+  promotionTemplate:
+    spec:
+      steps:
+        - task:
+            name: orchestration-stack-promotion-template-argo
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: argo-rollouts
+  annotations:
+    kargo.akuity.io/color: purple
+spec:
+  vars:
+    - name: imageUrl
+      value: https://argoproj.github.io/argo-helm
+    - name: argoName
+      value: argo-rollouts
+    - name: chartName
+      value: argo-rollouts
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: argo-rollouts
+      sources:
+        direct: true
+        autoPromotionOptions:
+          selectionPolicy: NewestFreight
+  promotionTemplate:
+    spec:
+      steps:
+        - task:
+            name: orchestration-stack-promotion-template-argo

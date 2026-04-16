@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: orchestration-root-app-eu-central-1
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: kube-devops
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: git@git.janis-eccarius.de:NowChess/GitOps.git
+      path: ./eu-central-1/argo-apps
+      targetRevision: main
+      directory:
+        recurse: true
+        jsonnet: {}
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true#

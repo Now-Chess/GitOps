@@ -1,0 +1,35 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: kargo
+spec:
+  subscriptions:
+    - chart:
+        repoURL: oci://ghcr.io/akuity/kargo-charts/kargo
+        semverConstraint: ^1.8.1
+  interval: "15m0s"
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: argo-rollouts
+spec:
+  subscriptions:
+    - chart:
+        repoURL: https://argoproj.github.io/argo-helm
+        name: argo-rollouts
+        semverConstraint: ^2.40.5
+  interval: "15m0s"
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: cert-manager
+spec:
+  subscriptions:
+    - chart:
+        repoURL: https://charts.jetstack.io
+        name: cert-manager
+        semverConstraint: ^1.19.1
+  interval: "15m0s"
+---

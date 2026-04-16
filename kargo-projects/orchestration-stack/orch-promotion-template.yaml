@@ -1,0 +1,66 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: PromotionTask
+metadata:
+  name: orchestration-stack-promotion-template-argo
+  namespace: orchestration-kargo
+spec:
+  vars:
+    - name: repoUrl
+      value: https://git.janis-eccarius.de/NowChess/Gitops.git
+    - name: branch
+      value: main
+    - name: imageTag
+      value: ${{ chartFrom(vars.imageUrl, vars.chartName).Version }}
+  steps:
+    - uses: git-clone
+      config:
+        repoURL: ${{ vars.repoUrl }}
+        checkout:
+          - branch: ${{ vars.branch }}
+            path: ./work
+    - uses: yaml-update
+      as: update-app
+      config:
+        path: "./work/eu-central-1/argo-apps/${{ vars.argoName }}/${{ vars.argoName }}.yaml"
+        updates:
+          - key: spec.sources.0.targetRevision
+            value: ${{ vars.imageTag }}
+
+    - uses: git-commit
+      as: commit
+      config:
+        path: ./work
+        message: "chore(kargo): update image tag ${{ vars.argoName }} to ${{ vars.imageTag }}"
+
+    - uses: git-push
+      as: push
+      if: "${{ status('commit') != 'Skipped'}}"
+      config:
+        path: ./work
+        generateTargetBranch: true
+
+    - uses: git-open-pr
+      if: "${{ status('commit') != 'Skipped'}}"
+      as: open-pr
+      config:
+        repoURL: ${{ vars.repoUrl }}
+        provider: "gitea"
+        sourceBranch: ${{ task.outputs['push'].branch }}
+        targetBranch: ${{ vars.branch }}
+        title: "chore(kargo): update image tag ${{ vars.argoName }} to ${{ vars.imageTag }}"
+        labels: ["kargo", "promotion"]
+    - uses: git-merge-pr
+      if: "${{ status('open-pr') != 'Skipped'}}"
+      as: merge-pr
+      config:
+        repoURL: ${{ vars.repoUrl }}
+        provider: "gitea"
+        prNumber: ${{ task.outputs['open-pr'].pr.id }}
+        wait: true
+    - uses: git-wait-for-pr
+      if: "${{ status('open-pr') != 'Skipped'}}"
+      as: wait-for-pr
+      config:
+        repoURL: ${{ vars.repoUrl }}
+        provider: "gitea"
+        prNumber: ${{ task.outputs['open-pr'].pr.id }}

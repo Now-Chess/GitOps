@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: orchestration-kargo
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: orchestration-kargo
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: git@git.janis-eccarius.de:NowChess/Gitops.git
+      path: ./kargo-projects/orchestration-stack
+      ref: values
+      targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
