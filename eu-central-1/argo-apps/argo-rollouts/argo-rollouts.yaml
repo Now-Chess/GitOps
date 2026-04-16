@@ -14,9 +14,9 @@ spec:
       targetRevision: 2.40.9
       helm:
         valueFiles:
-          - $values/argo-rollouts/base/values.yaml
+          - $values/argo-rollouts/eu-central-1/values.yaml
     - repoURL: git@git.janis-eccarius.de:NowChess/Gitops.git
-      path: ./argo-rollouts/base
+      path: ./argo-rollouts/eu-central-1
       ref: values
       targetRevision: main
 

@@ -97,7 +97,7 @@ fabric.properties
 
 # Disable charts
 /cert-manager/base/charts/
-/argocd/base/charts/
+/argocd/eu-central-1/charts/
 /argo-rollouts/base/charts/
 /kargo/base/charts/
 /kargo/base/kargo-admin-password.yaml

@@ -30,7 +30,7 @@ install_argocd() {
   echo "----------------------------------------"
 
   echo "🚀 Installing ArgoCD..."
-  kustomize build --enable-helm ../argocd/eu-central-1 | kubectl apply -f -
+  kustomize build --enable-helm ../argocd/eu-central-1 | kubectl apply --server-side=true -f -
   echo "✅ ArgoCD installed successfully!"
 }
 
@@ -42,12 +42,9 @@ install_argocd
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.15.1/deploy/static/provider/baremetal/deploy.yaml
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-
-sleep 30s
-kustomize build ../git/local | kubectl apply -f -
 sleep 5s
 
-kubectl apply -f ../local/root-apps-app.yaml
+kubectl apply -f ../eu-central-1/root-apps-app.yaml
 
 clear
 
