@@ -56,6 +56,7 @@ spec:
         repoURL: ${{ vars.repoUrl }}
         provider: "gitea"
         prNumber: ${{ task.outputs['open-pr'].pr.id }}
+        mergeMethod: "rebase"
         wait: true
     - uses: git-wait-for-pr
       if: "${{ status('open-pr') != 'Skipped'}}"
