@@ -3,6 +3,11 @@ architecture: standalone
 auth:
   enabled: false
 
+image:
+  registry: ghcr.io
+  repository: library/redis
+  tag: "7-alpine"
+
 master:
   resources:
     requests:
