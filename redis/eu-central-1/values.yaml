@@ -8,8 +8,8 @@ global:
     allowInsecureImages: true
 
 image:
-  registry: ghcr.io
-  repository: library/redis
+  registry: quay.io
+  repository: redis/redis
   tag: "7-alpine"
 
 master:
