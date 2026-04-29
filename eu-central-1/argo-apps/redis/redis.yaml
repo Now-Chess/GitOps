@@ -1,0 +1,27 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: redis
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: https://charts.bitnami.com/bitnami
+      chart: redis
+      targetRevision: 20.x
+      helm:
+        valueFiles:
+          - $values/redis/eu-central-1/values.yaml
+    - repoURL: git@git.janis-eccarius.de:NowChess/GitOps.git
+      path: ./redis/eu-central-1
+      ref: values
+      targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
