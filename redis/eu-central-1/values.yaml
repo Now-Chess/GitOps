@@ -6,7 +6,7 @@ auth:
 image:
   registry: docker.io
   repository: redis
-  tag: "8.6.2-alpine"
+  tag: "8.6.2-trixie"
 
 master:
   resources:
