@@ -42,7 +42,7 @@ patches:
       replicas: 1
 images:
 - name: ghcr.io/now-chess/now-chess-systems/account
-  newTag: 0.3.0
+  newTag: 0.4.0
 - name: ghcr.io/now-chess/now-chess-systems/bot-platform
   newTag: 0.4.0
 - name: ghcr.io/now-chess/now-chess-systems/coordinator
