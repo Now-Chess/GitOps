@@ -14,6 +14,7 @@ patches:
         QUARKUS_PROFILE: production,deployed
         CORS_ORIGINS: https://nowchess.janis-eccarius.de
         NOWCHESS_COORDINATOR_ENABLED: "true"
+        REDIS_PREFIX: nowchess
     target:
       kind: ConfigMap
       name: nowchess-env-config

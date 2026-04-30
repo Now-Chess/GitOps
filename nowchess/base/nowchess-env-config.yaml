@@ -6,3 +6,4 @@ data:
   QUARKUS_PROFILE: staging,deployed
   CORS_ORIGINS: ""
   NOWCHESS_COORDINATOR_ENABLED: "true"
+  REDIS_PREFIX: nowchess-staging
