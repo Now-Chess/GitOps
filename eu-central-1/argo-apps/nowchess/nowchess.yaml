@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nowchess
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: nowchess
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: git@git.janis-eccarius.de:NowChess/Gitops.git
+      path: ./nowchess/eu-central-1-prod
+      ref: values
+      targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

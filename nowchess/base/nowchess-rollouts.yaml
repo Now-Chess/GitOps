@@ -1,0 +1,634 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nowchess-account
+  labels:
+    app: nowchess-account
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nowchess-account
+  template:
+    metadata:
+      labels:
+        app: nowchess-account
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nowchess-account
+          image: ghcr.io/now-chess/now-chess-systems/account:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nowchess-env-config
+          env:
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: "6379"
+            - name: CORE_SERVICE_URL
+              value: http://nowchess-core-active:8080
+            - name: INTERNAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-internal-secret
+                  key: INTERNAL_SECRET
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-db-secrets
+                  key: ACCOUNT_DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-db-secrets
+                  key: ACCOUNT_DB_PASSWORD
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-db-secrets
+                  key: ACCOUNT_DB_URL
+            - name: JWT_PUBLIC_KEY_PATH
+              value: /secrets/jwt/public.pem
+            - name: JWT_PRIVATE_KEY_PATH
+              value: /secrets/jwt/private.pem
+          volumeMounts:
+            - name: jwt-keys
+              mountPath: /secrets/jwt
+              readOnly: true
+          ports:
+            - containerPort: 8083
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8083
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8083
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+      volumes:
+        - name: jwt-keys
+          secret:
+            secretName: ncs-jwt-keys
+  strategy:
+    blueGreen:
+      activeService: nowchess-account-active
+      previewService: nowchess-account-preview
+      autoPromotionEnabled: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nowchess-bot-platform
+  labels:
+    app: nowchess-bot-platform
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nowchess-bot-platform
+  template:
+    metadata:
+      labels:
+        app: nowchess-bot-platform
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nowchess-bot-platform
+          image: ghcr.io/now-chess/now-chess-systems/bot-platform:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nowchess-env-config
+          env:
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: "6379"
+          ports:
+            - containerPort: 8087
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8087
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8087
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+  strategy:
+    blueGreen:
+      activeService: nowchess-bot-platform-active
+      previewService: nowchess-bot-platform-preview
+      autoPromotionEnabled: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nowchess-coordinator
+  labels:
+    app: nowchess-coordinator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nowchess-coordinator
+  template:
+    metadata:
+      labels:
+        app: nowchess-coordinator
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nowchess-coordinator
+          image: ghcr.io/now-chess/now-chess-systems/coordinator:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nowchess-env-config
+          env:
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: "6379"
+            - name: INTERNAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-internal-secret
+                  key: INTERNAL_SECRET
+          ports:
+            - containerPort: 8086
+              name: http
+              protocol: TCP
+            - containerPort: 9086
+              name: grpc
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8086
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8086
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+  strategy:
+    blueGreen:
+      activeService: nowchess-coordinator-active
+      previewService: nowchess-coordinator-preview
+      autoPromotionEnabled: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nowchess-core
+  labels:
+    app: nowchess-core
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nowchess-core
+  template:
+    metadata:
+      labels:
+        app: nowchess-core
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nowchess-core
+          image: ghcr.io/now-chess/now-chess-systems/core:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nowchess-env-config
+          env:
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: "6379"
+            - name: INTERNAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-internal-secret
+                  key: INTERNAL_SECRET
+            - name: JWT_PUBLIC_KEY_PATH
+              value: /secrets/jwt/public.pem
+            - name: RULE_SERVICE_HOST
+              value: nowchess-rule-active
+            - name: RULE_SERVICE_GRPC_PORT
+              value: "8082"
+            - name: RULE_SERVICE_URL
+              value: http://nowchess-rule-active:8082
+            - name: IO_SERVICE_HOST
+              value: nowchess-io-active
+            - name: IO_SERVICE_GRPC_PORT
+              value: "8081"
+            - name: IO_SERVICE_URL
+              value: http://nowchess-io-active:8081
+            - name: COORDINATOR_SERVICE_HOST
+              value: nowchess-coordinator-active
+            - name: COORDINATOR_SERVICE_GRPC_PORT
+              value: "9086"
+            - name: STORE_SERVICE_URL
+              value: http://nowchess-store-active:8085
+          volumeMounts:
+            - name: jwt-keys
+              mountPath: /secrets/jwt
+              readOnly: true
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "200m"
+              memory: "256Mi"
+            limits:
+              cpu: "1000m"
+              memory: "512Mi"
+      volumes:
+        - name: jwt-keys
+          secret:
+            secretName: ncs-jwt-keys
+  strategy:
+    blueGreen:
+      activeService: nowchess-core-active
+      previewService: nowchess-core-preview
+      autoPromotionEnabled: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nowchess-io
+  labels:
+    app: nowchess-io
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nowchess-io
+  template:
+    metadata:
+      labels:
+        app: nowchess-io
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nowchess-io
+          image: ghcr.io/now-chess/now-chess-systems/io:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nowchess-env-config
+          env:
+            - name: INTERNAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-internal-secret
+                  key: INTERNAL_SECRET
+          ports:
+            - containerPort: 8081
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8081
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+  strategy:
+    blueGreen:
+      activeService: nowchess-io-active
+      previewService: nowchess-io-preview
+      autoPromotionEnabled: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nowchess-official-bots
+  labels:
+    app: nowchess-official-bots
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nowchess-official-bots
+  template:
+    metadata:
+      labels:
+        app: nowchess-official-bots
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nowchess-official-bots
+          image: ghcr.io/now-chess/now-chess-systems/official-bots:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nowchess-env-config
+          env:
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: "6379"
+          ports:
+            - containerPort: 8088
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8088
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8088
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+  strategy:
+    blueGreen:
+      activeService: nowchess-official-bots-active
+      previewService: nowchess-official-bots-preview
+      autoPromotionEnabled: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nowchess-rule
+  labels:
+    app: nowchess-rule
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nowchess-rule
+  template:
+    metadata:
+      labels:
+        app: nowchess-rule
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nowchess-rule
+          image: ghcr.io/now-chess/now-chess-systems/rule:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nowchess-env-config
+          env:
+            - name: INTERNAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-internal-secret
+                  key: INTERNAL_SECRET
+          ports:
+            - containerPort: 8082
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8082
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8082
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+  strategy:
+    blueGreen:
+      activeService: nowchess-rule-active
+      previewService: nowchess-rule-preview
+      autoPromotionEnabled: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nowchess-store
+  labels:
+    app: nowchess-store
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nowchess-store
+  template:
+    metadata:
+      labels:
+        app: nowchess-store
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nowchess-store
+          image: ghcr.io/now-chess/now-chess-systems/store:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nowchess-env-config
+          env:
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: "6379"
+            - name: INTERNAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-internal-secret
+                  key: INTERNAL_SECRET
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-db-secrets
+                  key: STORE_DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-db-secrets
+                  key: STORE_DB_PASSWORD
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-db-secrets
+                  key: STORE_DB_URL
+          ports:
+            - containerPort: 8085
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8085
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8085
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+  strategy:
+    blueGreen:
+      activeService: nowchess-store-active
+      previewService: nowchess-store-preview
+      autoPromotionEnabled: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nowchess-ws
+  labels:
+    app: nowchess-ws
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nowchess-ws
+  template:
+    metadata:
+      labels:
+        app: nowchess-ws
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nowchess-ws
+          image: ghcr.io/now-chess/now-chess-systems/ws:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nowchess-env-config
+          env:
+            - name: REDIS_HOST
+              value: redis
+            - name: REDIS_PORT
+              value: "6379"
+            - name: INTERNAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-internal-secret
+                  key: INTERNAL_SECRET
+            - name: JWT_PUBLIC_KEY_PATH
+              value: /secrets/jwt/public.pem
+          volumeMounts:
+            - name: jwt-keys
+              mountPath: /secrets/jwt
+              readOnly: true
+          ports:
+            - containerPort: 8084
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8084
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8084
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+      volumes:
+        - name: jwt-keys
+          secret:
+            secretName: ncs-jwt-keys
+  strategy:
+    blueGreen:
+      activeService: nowchess-ws-active
+      previewService: nowchess-ws-preview
+      autoPromotionEnabled: true

@@ -1,0 +1,147 @@
+kind: Stage
+apiVersion: kargo.akuity.io/v1alpha1
+metadata:
+  name: staging
+  namespace: nowchess-kargo
+  annotations:
+    kargo.akuity.io/color: fuchsia
+spec:
+  vars:
+    - name: argocdName
+      value: nowchess-staging
+    - name: folder
+      value: eu-central-1-staging
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: account
+      sources:
+        direct: true
+    - origin:
+        kind: Warehouse
+        name: bot-platform
+      sources:
+        direct: true
+    - origin:
+        kind: Warehouse
+        name: coordinator
+      sources:
+        direct: true
+    - origin:
+        kind: Warehouse
+        name: core
+      sources:
+        direct: true
+    - origin:
+        kind: Warehouse
+        name: io
+      sources:
+        direct: true
+    - origin:
+        kind: Warehouse
+        name: official-bots
+      sources:
+        direct: true
+    - origin:
+        kind: Warehouse
+        name: rule
+      sources:
+        direct: true
+    - origin:
+        kind: Warehouse
+        name: store
+      sources:
+        direct: true
+    - origin:
+        kind: Warehouse
+        name: ws
+      sources:
+        direct: true
+  promotionTemplate:
+    spec:
+      steps:
+        - task:
+            name: nowchess-kargo-promotion-template
+---
+kind: Stage
+apiVersion: kargo.akuity.io/v1alpha1
+metadata:
+  name: prod
+  namespace: nowchess-kargo
+  annotations:
+    kargo.akuity.io/color: green
+spec:
+  vars:
+    - name: argocdName
+      value: nowchess
+    - name: folder
+      value: eu-central-1-prod
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: account
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: bot-platform
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: coordinator
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: core
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: io
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: official-bots
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: rule
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: store
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: ws
+      sources:
+        direct: false
+        stages:
+          - staging
+  promotionTemplate:
+    spec:
+      steps:
+        - task:
+            name: nowchess-kargo-promotion-template

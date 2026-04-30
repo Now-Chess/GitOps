@@ -1,0 +1,19 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nowchess-kargo
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: nowchess-kargo
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: git@git.janis-eccarius.de:NowChess/Gitops.git
+      path: ./kargo-projects/nowchess
+      ref: values
+      targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

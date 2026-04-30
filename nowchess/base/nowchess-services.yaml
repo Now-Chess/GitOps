@@ -1,0 +1,225 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-account-active
+spec:
+  selector:
+    app: nowchess-account
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-account-preview
+spec:
+  selector:
+    app: nowchess-account
+  ports:
+    - protocol: TCP
+      port: 8083
+      targetPort: 8083
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-bot-platform-active
+spec:
+  selector:
+    app: nowchess-bot-platform
+  ports:
+    - protocol: TCP
+      port: 8087
+      targetPort: 8087
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-bot-platform-preview
+spec:
+  selector:
+    app: nowchess-bot-platform
+  ports:
+    - protocol: TCP
+      port: 8087
+      targetPort: 8087
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-coordinator-active
+spec:
+  selector:
+    app: nowchess-coordinator
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8086
+      targetPort: 8086
+    - name: grpc
+      protocol: TCP
+      port: 9086
+      targetPort: 9086
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-coordinator-preview
+spec:
+  selector:
+    app: nowchess-coordinator
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8086
+      targetPort: 8086
+    - name: grpc
+      protocol: TCP
+      port: 9086
+      targetPort: 9086
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-core-active
+spec:
+  selector:
+    app: nowchess-core
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-core-preview
+spec:
+  selector:
+    app: nowchess-core
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-io-active
+spec:
+  selector:
+    app: nowchess-io
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-io-preview
+spec:
+  selector:
+    app: nowchess-io
+  ports:
+    - protocol: TCP
+      port: 8081
+      targetPort: 8081
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-official-bots-active
+spec:
+  selector:
+    app: nowchess-official-bots
+  ports:
+    - protocol: TCP
+      port: 8088
+      targetPort: 8088
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-official-bots-preview
+spec:
+  selector:
+    app: nowchess-official-bots
+  ports:
+    - protocol: TCP
+      port: 8088
+      targetPort: 8088
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-rule-active
+spec:
+  selector:
+    app: nowchess-rule
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-rule-preview
+spec:
+  selector:
+    app: nowchess-rule
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-store-active
+spec:
+  selector:
+    app: nowchess-store
+  ports:
+    - protocol: TCP
+      port: 8085
+      targetPort: 8085
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-store-preview
+spec:
+  selector:
+    app: nowchess-store
+  ports:
+    - protocol: TCP
+      port: 8085
+      targetPort: 8085
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-ws-active
+spec:
+  selector:
+    app: nowchess-ws
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-ws-preview
+spec:
+  selector:
+    app: nowchess-ws
+  ports:
+    - protocol: TCP
+      port: 8084
+      targetPort: 8084

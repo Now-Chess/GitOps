@@ -1,0 +1,134 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: account
+  namespace: nowchess-kargo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 20
+        imageSelectionStrategy: SemVer
+        repoURL: ghcr.io/now-chess/now-chess-systems/account
+        strictSemvers: true
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: bot-platform
+  namespace: nowchess-kargo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 20
+        imageSelectionStrategy: SemVer
+        repoURL: ghcr.io/now-chess/now-chess-systems/bot-platform
+        strictSemvers: true
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: coordinator
+  namespace: nowchess-kargo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 20
+        imageSelectionStrategy: SemVer
+        repoURL: ghcr.io/now-chess/now-chess-systems/coordinator
+        strictSemvers: true
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: core
+  namespace: nowchess-kargo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 20
+        imageSelectionStrategy: SemVer
+        repoURL: ghcr.io/now-chess/now-chess-systems/core
+        strictSemvers: true
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: io
+  namespace: nowchess-kargo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 20
+        imageSelectionStrategy: SemVer
+        repoURL: ghcr.io/now-chess/now-chess-systems/io
+        strictSemvers: true
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: official-bots
+  namespace: nowchess-kargo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 20
+        imageSelectionStrategy: SemVer
+        repoURL: ghcr.io/now-chess/now-chess-systems/official-bots
+        strictSemvers: true
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: rule
+  namespace: nowchess-kargo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 20
+        imageSelectionStrategy: SemVer
+        repoURL: ghcr.io/now-chess/now-chess-systems/rule
+        strictSemvers: true
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: store
+  namespace: nowchess-kargo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 20
+        imageSelectionStrategy: SemVer
+        repoURL: ghcr.io/now-chess/now-chess-systems/store
+        strictSemvers: true
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: ws
+  namespace: nowchess-kargo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 20
+        imageSelectionStrategy: SemVer
+        repoURL: ghcr.io/now-chess/now-chess-systems/ws
+        strictSemvers: true

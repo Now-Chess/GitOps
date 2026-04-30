@@ -1,0 +1,47 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nowchess-ingress-st
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: st.nowchess.janis-eccarius.de
+      http:
+        paths:
+          - path: /api/account
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-account-active
+                port:
+                  number: 8083
+          - path: /ws
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-ws-active
+                port:
+                  number: 8084
+          - path: /api/store
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-store-active
+                port:
+                  number: 8085
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-core-active
+                port:
+                  number: 8080
+  tls:
+    - hosts:
+        - st.nowchess.janis-eccarius.de
+      secretName: nowchess-staging-ingress-cert

@@ -1,0 +1,78 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: PromotionTask
+metadata:
+  name: nowchess-kargo-promotion-template
+  namespace: nowchess-kargo
+spec:
+  vars:
+    - name: repoUrl
+      value: https://git.janis-eccarius.de/NowChess/Gitops.git
+    - name: component
+      value: ${{ ctx.targetFreight.origin.name }}
+    - name: imageRepoUrl
+      value: 'ghcr.io/now-chess/now-chess-systems/${{ vars.component }}'
+    - name: branch
+      value: main
+    - name: imageTag
+      value: ${{ imageFrom(vars.imageRepoUrl).Tag }}
+  steps:
+    - uses: git-clone
+      config:
+        repoURL: ${{ vars.repoUrl }}
+        checkout:
+          - branch: ${{ vars.branch }}
+            path: ./work
+    - uses: kustomize-set-image
+      as: set-image
+      config:
+        path: ./work/nowchess/${{ vars.folder }}
+        images:
+          - image: ${{ vars.imageRepoUrl }}
+            tag: ${{ vars.imageTag }}
+    - uses: git-commit
+      as: commit
+      config:
+        path: ./work
+        message: "chore(kargo): update image tag ${{ vars.component }} to ${{ vars.imageTag }} on ${{ ctx.stage }}"
+    - uses: git-push
+      as: push
+      if: "${{ status('commit') != 'Skipped'}}"
+      config:
+        path: ./work
+        generateTargetBranch: true
+    - uses: git-open-pr
+      if: "${{ status('commit') != 'Skipped'}}"
+      as: open-pr
+      config:
+        repoURL: ${{ vars.repoUrl }}
+        provider: "gitea"
+        sourceBranch: ${{ task.outputs['push'].branch }}
+        targetBranch: ${{ vars.branch }}
+        title: "chore(kargo): update image tag ${{ vars.component }} to ${{ vars.imageTag }} on ${{ ctx.stage }}"
+        labels: ["kargo", "promotion"]
+    - uses: git-merge-pr
+      if: "${{ status('open-pr') != 'Skipped'}}"
+      as: merge-pr
+      config:
+        repoURL: ${{ vars.repoUrl }}
+        provider: "gitea"
+        prNumber: ${{ task.outputs['open-pr'].pr.id }}
+        wait: true
+    - uses: git-wait-for-pr
+      if: "${{ status('open-pr') != 'Skipped'}}"
+      as: wait-for-pr
+      config:
+        repoURL: ${{ vars.repoUrl }}
+        provider: "gitea"
+        prNumber: ${{ task.outputs['open-pr'].pr.id }}
+    - uses: argocd-update
+      as: argocd-update
+      config:
+        apps:
+          - name: ${{ vars.argocdName }}
+            sources:
+              - repoURL: git@git.janis-eccarius.de:NowChess/Gitops.git
+                kustomize:
+                  images:
+                    - repoURL: ${{ vars.imageRepoUrl }}
+                      tag: ${{ vars.imageTag }}

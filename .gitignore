@@ -108,3 +108,5 @@ fabric.properties
 # Unsealed Secret files (templates for kubeseal)
 secrets/**
 !secrets/kustomization.yaml
+!secrets/nowchess/
+!secrets/nowchess/**
