@@ -43,7 +43,7 @@ images:
 - name: ghcr.io/now-chess/now-chess-systems/account
   newTag: latest
 - name: ghcr.io/now-chess/now-chess-systems/bot-platform
-  newTag: latest
+  newTag: 0.1.0
 - name: ghcr.io/now-chess/now-chess-systems/coordinator
   newTag: latest
 - name: ghcr.io/now-chess/now-chess-systems/core
