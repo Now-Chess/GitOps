@@ -56,7 +56,7 @@ images:
 - name: ghcr.io/now-chess/now-chess-systems/rule
   newTag: 0.12.0
 - name: ghcr.io/now-chess/now-chess-systems/store
-  newTag: 0.2.0
+  newTag: 0.3.0
 - name: ghcr.io/now-chess/now-chess-systems/ws
   newTag: 0.3.0
 configurations:
