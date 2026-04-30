@@ -49,7 +49,7 @@ images:
 - name: ghcr.io/now-chess/now-chess-systems/core
   newTag: 0.21.0
 - name: ghcr.io/now-chess/now-chess-systems/io
-  newTag: latest
+  newTag: 0.14.0
 - name: ghcr.io/now-chess/now-chess-systems/official-bots
   newTag: latest
 - name: ghcr.io/now-chess/now-chess-systems/rule
