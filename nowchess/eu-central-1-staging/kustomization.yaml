@@ -18,6 +18,27 @@ patches:
   target:
     kind: ConfigMap
     name: nowchess-env-config
+- patch: |-
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    metadata:
+      name: nowchess-account
+    spec:
+      replicas: 1
+- patch: |-
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    metadata:
+      name: nowchess-core
+    spec:
+      replicas: 1
+- patch: |-
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    metadata:
+      name: nowchess-ws
+    spec:
+      replicas: 1
 images:
 - name: ghcr.io/now-chess/now-chess-systems/account
   newTag: latest
