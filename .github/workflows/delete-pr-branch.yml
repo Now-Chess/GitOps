@@ -1,0 +1,50 @@
+name: Delete PR Branch On Close
+
+on:
+  pull_request:
+    types:
+      - closed
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  delete-branch:
+    runs-on: gitops_runner
+    if: >-
+      github.event.pull_request.merged == true
+
+    steps:
+      - name: Delete branch via Gitea API
+        shell: bash
+        env:
+          TOKEN: ${{ secrets.GITEA_TOKEN }}
+          REPOSITORY: ${{ github.repository }}
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          API_BASE: ${{ GITHUB_API_URL }}
+        run: |
+          set -euo pipefail
+
+          # Branch names commonly include '/'; encode it for the API path segment.
+          BRANCH_ENCODED="${BRANCH//\//%2F}"
+          URL="${API_BASE}/repos/${REPOSITORY}/branches/${BRANCH_ENCODED}"
+
+          RESPONSE_FILE="$(mktemp)"
+          STATUS="$(curl -sS -o "${RESPONSE_FILE}" -w "%{http_code}" \
+            -X DELETE \
+            -H "Authorization: token ${TOKEN}" \
+            -H "Accept: application/json" \
+            "${URL}")"
+
+          if [ "${STATUS}" = "204" ]; then
+            echo "Deleted branch: ${BRANCH}"
+          elif [ "${STATUS}" = "404" ]; then
+            echo "Branch already deleted or missing: ${BRANCH}"
+          else
+            echo "Branch deletion failed with HTTP ${STATUS}"
+            cat "${RESPONSE_FILE}"
+            exit 1
+          fi
+
+

@@ -15,6 +15,7 @@ patches:
       CORS_ORIGINS: https://st.nowchess.janis-eccarius.de
       NOWCHESS_COORDINATOR_ENABLED: "true"
       REDIS_PREFIX: nowchess-staging
+      QUARKUS_LOG_LEVEL: "INFO"
   target:
     kind: ConfigMap
     name: nowchess-env-config
