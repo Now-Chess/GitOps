@@ -9,9 +9,9 @@ spec:
   subscriptions:
     - image:
         discoveryLimit: 20
-        imageSelectionStrategy: Digest
+        imageSelectionStrategy: SemVer
         repoURL: ghcr.io/now-chess/now-chess-systems/account
-        constraint: latest
+        strictSemvers: true
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
@@ -24,9 +24,9 @@ spec:
   subscriptions:
     - image:
         discoveryLimit: 20
-        imageSelectionStrategy: Digest
+        imageSelectionStrategy: SemVer
         repoURL: ghcr.io/now-chess/now-chess-systems/bot-platform
-        constraint: latest
+        strictSemvers: true
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
@@ -39,9 +39,9 @@ spec:
   subscriptions:
     - image:
         discoveryLimit: 20
-        imageSelectionStrategy: Digest
+        imageSelectionStrategy: SemVer
         repoURL: ghcr.io/now-chess/now-chess-systems/coordinator
-        constraint: latest
+        strictSemvers: true
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
@@ -54,9 +54,9 @@ spec:
   subscriptions:
     - image:
         discoveryLimit: 20
-        imageSelectionStrategy: Digest
+        imageSelectionStrategy: SemVer
         repoURL: ghcr.io/now-chess/now-chess-systems/core
-        constraint: latest
+        strictSemvers: true
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
@@ -69,9 +69,9 @@ spec:
   subscriptions:
     - image:
         discoveryLimit: 20
-        imageSelectionStrategy: Digest
+        imageSelectionStrategy: SemVer
         repoURL: ghcr.io/now-chess/now-chess-systems/io
-        constraint: latest
+        strictSemvers: true
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
@@ -84,9 +84,9 @@ spec:
   subscriptions:
     - image:
         discoveryLimit: 20
-        imageSelectionStrategy: Digest
+        imageSelectionStrategy: SemVer
         repoURL: ghcr.io/now-chess/now-chess-systems/official-bots
-        constraint: latest
+        strictSemvers: true
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
@@ -99,9 +99,9 @@ spec:
   subscriptions:
     - image:
         discoveryLimit: 20
-        imageSelectionStrategy: Digest
+        imageSelectionStrategy: SemVer
         repoURL: ghcr.io/now-chess/now-chess-systems/rule
-        constraint: latest
+        strictSemvers: true
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
@@ -114,9 +114,9 @@ spec:
   subscriptions:
     - image:
         discoveryLimit: 20
-        imageSelectionStrategy: Digest
+        imageSelectionStrategy: SemVer
         repoURL: ghcr.io/now-chess/now-chess-systems/store
-        constraint: latest
+        strictSemvers: true
 ---
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
@@ -129,6 +129,6 @@ spec:
   subscriptions:
     - image:
         discoveryLimit: 20
-        imageSelectionStrategy: Digest
+        imageSelectionStrategy: SemVer
         repoURL: ghcr.io/now-chess/now-chess-systems/ws
-        constraint: latest
+        strictSemvers: true
