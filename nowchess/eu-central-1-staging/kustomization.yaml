@@ -57,7 +57,7 @@ images:
 - name: ghcr.io/now-chess/now-chess-systems/store
   newTag: latest
 - name: ghcr.io/now-chess/now-chess-systems/ws
-  newTag: latest
+  newTag: 0.1.0
 configurations:
 - rollout-transform.yaml
 openapi:
