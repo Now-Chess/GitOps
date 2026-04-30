@@ -22,9 +22,23 @@ jobs:
           TOKEN: ${{ secrets.GITEA_TOKEN }}
           REPOSITORY: ${{ github.repository }}
           BRANCH: ${{ github.event.pull_request.head.ref }}
-          API_BASE: ${{ GITHUB_API_URL }}
         run: |
           set -euo pipefail
+
+          API_BASE="${GITHUB_API_URL:-}"
+          if [ -z "${API_BASE}" ]; then
+            SERVER_URL="${GITHUB_SERVER_URL:-}"
+            if [ -z "${SERVER_URL}" ]; then
+              echo "Unable to resolve Gitea API base URL from GITHUB_API_URL or GITHUB_SERVER_URL"
+              exit 1
+            fi
+            API_BASE="${SERVER_URL%/}/api/v1"
+          fi
+
+          if [ -z "${API_BASE}" ]; then
+            echo "Unable to resolve Gitea API base URL"
+            exit 1
+          fi
 
           # Branch names commonly include '/'; encode it for the API path segment.
           BRANCH_ENCODED="${BRANCH//\//%2F}"
