@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-tunnel-config
+  namespace: postgres-tunnel
+data:
+  SSH_HOST: "130.61.135.202"
+  SSH_PORT: "22"
+  SSH_USER: "cluster"
+  POSTGRES_REMOTE_HOST: "localhost"
+  POSTGRES_REMOTE_PORT: "5432"

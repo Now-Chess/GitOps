@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-tunnel
+  namespace: postgres-tunnel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres-tunnel
+  template:
+    metadata:
+      labels:
+        app: postgres-tunnel
+    spec:
+      containers:
+        - name: tunnel
+          image: alpine:3.21
+          command: [/bin/sh, -c]
+          args:
+            - |
+              apk add --no-cache openssh-client
+              exec ssh -N \
+                -o StrictHostKeyChecking=no \
+                -o ServerAliveInterval=30 \
+                -o ServerAliveCountMax=3 \
+                -o ExitOnForwardFailure=yes \
+                -L 0.0.0.0:5432:$(POSTGRES_REMOTE_HOST):$(POSTGRES_REMOTE_PORT) \
+                -i /ssh-key/id_rsa \
+                -p $(SSH_PORT) \
+                $(SSH_USER)@$(SSH_HOST)
+          envFrom:
+            - configMapRef:
+                name: postgres-tunnel-config
+          ports:
+            - containerPort: 5432
+              name: postgres
+          volumeMounts:
+            - name: ssh-key
+              mountPath: /ssh-key
+              readOnly: true
+          resources:
+            requests:
+              cpu: 10m
+              memory: 16Mi
+            limits:
+              cpu: 50m
+              memory: 32Mi
+          livenessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            tcpSocket:
+              port: 5432
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: ssh-key
+          secret:
+            secretName: postgres-tunnel-ssh-key
+            defaultMode: 0400
+      restartPolicy: Always
