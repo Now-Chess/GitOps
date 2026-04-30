@@ -107,4 +107,5 @@ fabric.properties
 
 # Unsealed Secret files (templates for kubeseal)
 secrets/**
+secrets/**/*.yml
 !secrets/kustomization.yaml
