@@ -15,11 +15,11 @@ spec:
     spec:
       containers:
         - name: tunnel
-          image: alpine:3.21
+          image: ghcr.io/16janis12/ssh-client-docker:main
+          imagePullPolicy: Always
           command: [/bin/sh, -c]
           args:
             - |
-              apk add --no-cache openssh-client
               exec ssh -N \
                 -o StrictHostKeyChecking=no \
                 -o ServerAliveInterval=30 \
@@ -42,7 +42,7 @@ spec:
           resources:
             requests:
               cpu: 10m
-              memory: 16Mi
+              memory: 8Mi
             limits:
               cpu: 50m
               memory: 32Mi
