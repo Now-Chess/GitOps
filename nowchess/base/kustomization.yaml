@@ -5,6 +5,7 @@ resources:
   - nowchess-rollouts.yaml
   - nowchess-services.yaml
   - nowchess-env-config.yaml
+  - nowchess-hpa.yaml
 
 configurations:
   - rollout-transform.yaml

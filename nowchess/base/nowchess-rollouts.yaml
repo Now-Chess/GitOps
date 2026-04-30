@@ -5,7 +5,7 @@ metadata:
   labels:
     app: nowchess-account
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: nowchess-account
@@ -75,7 +75,7 @@ spec:
             periodSeconds: 5
           resources:
             requests:
-              cpu: "100m"
+              cpu: "5m"
               memory: "128Mi"
             limits:
               cpu: "500m"
@@ -137,7 +137,7 @@ spec:
             periodSeconds: 5
           resources:
             requests:
-              cpu: "100m"
+              cpu: "5m"
               memory: "128Mi"
             limits:
               cpu: "500m"
@@ -204,7 +204,7 @@ spec:
             periodSeconds: 5
           resources:
             requests:
-              cpu: "100m"
+              cpu: "20m"
               memory: "128Mi"
             limits:
               cpu: "500m"
@@ -291,7 +291,7 @@ spec:
             periodSeconds: 5
           resources:
             requests:
-              cpu: "200m"
+              cpu: "15m"
               memory: "256Mi"
             limits:
               cpu: "1000m"
@@ -354,7 +354,7 @@ spec:
             periodSeconds: 5
           resources:
             requests:
-              cpu: "100m"
+              cpu: "5m"
               memory: "128Mi"
             limits:
               cpu: "500m"
@@ -412,7 +412,7 @@ spec:
             periodSeconds: 5
           resources:
             requests:
-              cpu: "100m"
+              cpu: "5m"
               memory: "128Mi"
             limits:
               cpu: "500m"
@@ -471,7 +471,7 @@ spec:
             periodSeconds: 5
           resources:
             requests:
-              cpu: "100m"
+              cpu: "5m"
               memory: "128Mi"
             limits:
               cpu: "500m"
@@ -549,7 +549,7 @@ spec:
             periodSeconds: 5
           resources:
             requests:
-              cpu: "100m"
+              cpu: "5m"
               memory: "128Mi"
             limits:
               cpu: "500m"
@@ -567,7 +567,7 @@ metadata:
   labels:
     app: nowchess-ws
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: nowchess-ws
@@ -618,7 +618,7 @@ spec:
             periodSeconds: 5
           resources:
             requests:
-              cpu: "100m"
+              cpu: "5m"
               memory: "128Mi"
             limits:
               cpu: "500m"

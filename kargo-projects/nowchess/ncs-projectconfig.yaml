@@ -6,4 +6,4 @@ spec:
   promotionPolicies:
     - autoPromotionEnabled: true
       stageSelector:
-        name: regex:^staging$
+        name: regex:^staging|prod$
