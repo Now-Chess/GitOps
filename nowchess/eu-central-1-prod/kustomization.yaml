@@ -2,43 +2,43 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: nowchess
 resources:
-  - ../base
-  - ingress.yaml
+- ../base
+- ingress.yaml
 patches:
-  - patch: |-
-      apiVersion: v1
-      kind: ConfigMap
-      metadata:
-        name: nowchess-env-config
-      data:
-        QUARKUS_PROFILE: deployed
-        CORS_ORIGINS: https://nowchess.janis-eccarius.de
-        NOWCHESS_COORDINATOR_ENABLED: "true"
-        REDIS_PREFIX: nowchess
-        QUARKUS_LOG_LEVEL: "WARN"
-    target:
-      kind: ConfigMap
+- patch: |-
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
       name: nowchess-env-config
+    data:
+      QUARKUS_PROFILE: deployed
+      CORS_ORIGINS: https://nowchess.janis-eccarius.de
+      NOWCHESS_COORDINATOR_ENABLED: "true"
+      REDIS_PREFIX: nowchess
+      QUARKUS_LOG_LEVEL: "WARN"
+  target:
+    kind: ConfigMap
+    name: nowchess-env-config
 images:
-  - name: ghcr.io/now-chess/now-chess-systems/account
-    newTag: latest
-  - name: ghcr.io/now-chess/now-chess-systems/bot-platform
-    newTag: latest
-  - name: ghcr.io/now-chess/now-chess-systems/coordinator
-    newTag: latest
-  - name: ghcr.io/now-chess/now-chess-systems/core
-    newTag: latest
-  - name: ghcr.io/now-chess/now-chess-systems/io
-    newTag: latest
-  - name: ghcr.io/now-chess/now-chess-systems/official-bots
-    newTag: latest
-  - name: ghcr.io/now-chess/now-chess-systems/rule
-    newTag: latest
-  - name: ghcr.io/now-chess/now-chess-systems/store
-    newTag: latest
-  - name: ghcr.io/now-chess/now-chess-systems/ws
-    newTag: latest
+- name: ghcr.io/now-chess/now-chess-systems/account
+  newTag: latest
+- name: ghcr.io/now-chess/now-chess-systems/bot-platform
+  newTag: latest
+- name: ghcr.io/now-chess/now-chess-systems/coordinator
+  newTag: latest
+- name: ghcr.io/now-chess/now-chess-systems/core
+  newTag: latest
+- name: ghcr.io/now-chess/now-chess-systems/io
+  newTag: latest
+- name: ghcr.io/now-chess/now-chess-systems/official-bots
+  newTag: latest
+- name: ghcr.io/now-chess/now-chess-systems/rule
+  newTag: latest
+- name: ghcr.io/now-chess/now-chess-systems/store
+  newTag: 0.3.0
+- name: ghcr.io/now-chess/now-chess-systems/ws
+  newTag: latest
 configurations:
-  - rollout-transform.yaml
+- rollout-transform.yaml
 openapi:
   path: argo_all_k8s_kustomize_schema.json
