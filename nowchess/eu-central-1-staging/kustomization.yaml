@@ -11,7 +11,7 @@ patches:
     metadata:
       name: nowchess-env-config
     data:
-      QUARKUS_PROFILE: staging,deployed
+      QUARKUS_PROFILE: deployed
       CORS_ORIGINS: https://st.nowchess.janis-eccarius.de
       NOWCHESS_COORDINATOR_ENABLED: "true"
       REDIS_PREFIX: nowchess-staging
