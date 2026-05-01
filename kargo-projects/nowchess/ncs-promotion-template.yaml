@@ -86,7 +86,8 @@ spec:
         url: ${{ vars.discordWebhook }}
         method: POST
         headers:
-          Content-Type: application/json
+          - name: "Content-Type"
+            value: "application/json"
         body: |
           {
             "embeds": [
@@ -121,7 +122,8 @@ spec:
         url: ${{ vars.discordWebhook }}
         method: POST
         headers:
-          Content-Type: application/json
+          - name: "Content-Type"
+            value: "application/json"
         body: |
           {
             "embeds": [
