@@ -79,75 +79,75 @@ spec:
                   images:
                     - repoURL: ${{ vars.imageRepoUrl }}
                       tag: ${{ vars.imageTag }}
-    - uses: http
-      if: "${{ success() }}"
-      as: notify-success
-      config:
-        url: ${{ vars.discordWebhook }}
-        method: POST
-        headers:
-          - name: "Content-Type"
-            value: "application/json"
-        body: |
-          ${{ quote({
-            "embeds": [
-              {
-                "title": "✅ Promotion Succeeded",
-                "description": "Component promoted successfully",
-                "color": 3066993,
-                "fields": [
-                  {
-                    "name": "Component",
-                    "value": "${{ vars.component }}",
-                    "inline": true
-                  },
-                  {
-                    "name": "Image Tag",
-                    "value": "${{ vars.imageTag }}",
-                    "inline": true
-                  },
-                  {
-                    "name": "Stage",
-                    "value": "${{ ctx.stage }}",
-                    "inline": true
-                  }
-                ]
-              }
-            ]
-          }) }}
-    - uses: http
-      if: "${{ failure() }}"
-      as: notify-failure
-      config:
-        url: ${{ vars.discordWebhook }}
-        method: POST
-        headers:
-          - name: "Content-Type"
-            value: "application/json"
-        body: |
-          ${{ quote({
-            "embeds": [
-              {
-                "title": "❌ Promotion Failed",
-                "description": "Component promotion failed",
-                "color": 15158332,
-                "fields": [
-                  {
-                    "name": "Component",
-                    "value": "${{ vars.component }}",
-                    "inline": true
-                  },
-                  {
-                    "name": "Image Tag",
-                    "value": "${{ vars.imageTag }}",
-                    "inline": true
-                  },
-                  {
-                    "name": "Stage",
-                    "value": "${{ ctx.stage }}",
-                    "inline": true
-                  }
-                ]
-              }
-            ]
-          }) }}
+#    - uses: http
+#      if: "${{ success() }}"
+#      as: notify-success
+#      config:
+#        url: ${{ vars.discordWebhook }}
+#        method: POST
+#        headers:
+#          - name: "Content-Type"
+#            value: "application/json"
+#        body: |
+#          ${{ quote({
+#            "embeds": [
+#              {
+#                "title": "✅ Promotion Succeeded",
+#                "description": "Component promoted successfully",
+#                "color": 3066993,
+#                "fields": [
+#                  {
+#                    "name": "Component",
+#                    "value": "${{ vars.component }}",
+#                    "inline": true
+#                  },
+#                  {
+#                    "name": "Image Tag",
+#                    "value": "${{ vars.imageTag }}",
+#                    "inline": true
+#                  },
+#                  {
+#                    "name": "Stage",
+#                    "value": "${{ ctx.stage }}",
+#                    "inline": true
+#                  }
+#                ]
+#              }
+#            ]
+#          }) }}
+#    - uses: http
+#      if: "${{ failure() }}"
+#      as: notify-failure
+#      config:
+#        url: ${{ vars.discordWebhook }}
+#        method: POST
+#        headers:
+#          - name: "Content-Type"
+#            value: "application/json"
+#        body: |
+#          ${{ quote({
+#            "embeds": [
+#              {
+#                "title": "❌ Promotion Failed",
+#                "description": "Component promotion failed",
+#                "color": 15158332,
+#                "fields": [
+#                  {
+#                    "name": "Component",
+#                    "value": "${{ vars.component }}",
+#                    "inline": true
+#                  },
+#                  {
+#                    "name": "Image Tag",
+#                    "value": "${{ vars.imageTag }}",
+#                    "inline": true
+#                  },
+#                  {
+#                    "name": "Stage",
+#                    "value": "${{ ctx.stage }}",
+#                    "inline": true
+#                  }
+#                ]
+#              }
+#            ]
+#          }) }}
