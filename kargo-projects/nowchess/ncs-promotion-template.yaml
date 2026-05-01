@@ -15,6 +15,8 @@ spec:
       value: main
     - name: imageTag
       value: ${{ imageFrom(vars.imageRepoUrl).Tag }}
+    - name: discordWebhook
+      value: ${{ secret("discord-webhook").webhook }}
   steps:
     - uses: git-clone
       config:
@@ -77,3 +79,75 @@ spec:
                   images:
                     - repoURL: ${{ vars.imageRepoUrl }}
                       tag: ${{ vars.imageTag }}
+    - uses: http
+      if: "${{ success() }}"
+      as: notify-success
+      config:
+        url: ${{ vars.discordWebhook }}
+        method: POST
+        headers:
+          Content-Type: application/json
+        body: |
+          {
+            "embeds": [
+              {
+                "title": "✅ Promotion Succeeded",
+                "description": "Component promoted successfully",
+                "color": 3066993,
+                "fields": [
+                  {
+                    "name": "Component",
+                    "value": "${{ vars.component }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Image Tag",
+                    "value": "${{ vars.imageTag }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Stage",
+                    "value": "${{ ctx.stage }}",
+                    "inline": true
+                  }
+                ],
+                "timestamp": "${{ now.unix }}"
+              }
+            ]
+          }
+    - uses: http
+      if: "${{ failure() }}"
+      as: notify-failure
+      config:
+        url: ${{ vars.discordWebhook }}
+        method: POST
+        headers:
+          Content-Type: application/json
+        body: |
+          {
+            "embeds": [
+              {
+                "title": "❌ Promotion Failed",
+                "description": "Component promotion failed",
+                "color": 15158332,
+                "fields": [
+                  {
+                    "name": "Component",
+                    "value": "${{ vars.component }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Image Tag",
+                    "value": "${{ vars.imageTag }}",
+                    "inline": true
+                  },
+                  {
+                    "name": "Stage",
+                    "value": "${{ ctx.stage }}",
+                    "inline": true
+                  }
+                ],
+                "timestamp": "${{ now.unix }}"
+              }
+            ]
+          }
