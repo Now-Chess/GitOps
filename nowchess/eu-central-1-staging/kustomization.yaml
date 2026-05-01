@@ -20,26 +20,26 @@ patches:
     kind: ConfigMap
     name: nowchess-env-config
 - patch: |-
-    apiVersion: argoproj.io/v1alpha1
-    kind: Rollout
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
     metadata:
       name: nowchess-account
     spec:
-      replicas: 1
+      minReplicas: 1
 - patch: |-
-    apiVersion: argoproj.io/v1alpha1
-    kind: Rollout
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
     metadata:
       name: nowchess-core
     spec:
-      replicas: 1
+      minReplicas: 1
 - patch: |-
-    apiVersion: argoproj.io/v1alpha1
-    kind: Rollout
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
     metadata:
       name: nowchess-ws
     spec:
-      replicas: 1
+      minReplicas: 1
 images:
 - name: ghcr.io/now-chess/now-chess-systems/account
   newTag: 0.4.0

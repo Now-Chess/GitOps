@@ -4,7 +4,6 @@ metadata:
   name: postgres-tunnel
   namespace: postgres-tunnel
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: postgres-tunnel

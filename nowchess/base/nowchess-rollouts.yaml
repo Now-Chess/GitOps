@@ -5,7 +5,6 @@ metadata:
   labels:
     app: nowchess-account
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: nowchess-account
@@ -97,7 +96,6 @@ metadata:
   labels:
     app: nowchess-bot-platform
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: nowchess-bot-platform
@@ -155,7 +153,6 @@ metadata:
   labels:
     app: nowchess-coordinator
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: nowchess-coordinator
@@ -313,7 +310,6 @@ metadata:
   labels:
     app: nowchess-io
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: nowchess-io
@@ -372,7 +368,6 @@ metadata:
   labels:
     app: nowchess-official-bots
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: nowchess-official-bots
@@ -430,7 +425,6 @@ metadata:
   labels:
     app: nowchess-rule
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: nowchess-rule
@@ -489,7 +483,6 @@ metadata:
   labels:
     app: nowchess-store
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: nowchess-store
@@ -567,7 +560,6 @@ metadata:
   labels:
     app: nowchess-ws
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: nowchess-ws
