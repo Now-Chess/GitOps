@@ -30,16 +30,16 @@ patches:
     apiVersion: autoscaling/v2
     kind: HorizontalPodAutoscaler
     metadata:
-      name: nowchess-core
-    spec:
-      minReplicas: 1
-- patch: |-
-    apiVersion: autoscaling/v2
-    kind: HorizontalPodAutoscaler
-    metadata:
       name: nowchess-ws
     spec:
       minReplicas: 1
+- patch: |-
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    metadata:
+      name: nowchess-core
+    spec:
+      replicas: 1
 images:
 - name: ghcr.io/now-chess/now-chess-systems/account
   newTag: 0.4.0
