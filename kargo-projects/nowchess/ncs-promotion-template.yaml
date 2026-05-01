@@ -146,8 +146,7 @@ spec:
                     "value": "${{ ctx.stage }}",
                     "inline": true
                   }
-                ],
-                "timestamp": "${{ now.unix }}"
+                ]
               }
             ]
           }
