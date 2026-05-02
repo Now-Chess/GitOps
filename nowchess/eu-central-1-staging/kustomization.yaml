@@ -4,6 +4,7 @@ namespace: nowchess-staging
 resources:
 - ../base
 - ingress.yaml
+- rbac-coordinator.yaml
 patches:
 - patch: |-
     apiVersion: v1
