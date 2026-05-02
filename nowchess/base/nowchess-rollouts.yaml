@@ -172,6 +172,10 @@ spec:
             - configMapRef:
                 name: nowchess-env-config
           env:
+            - name: NOWCHESS_COORDINATOR_K8S_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
             - name: REDIS_HOST
               value: redis-master.redis.svc.cluster.local
             - name: REDIS_PORT
