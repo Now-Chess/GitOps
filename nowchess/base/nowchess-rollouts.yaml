@@ -13,7 +13,6 @@ spec:
       labels:
         app: nowchess-account
     spec:
-      serviceAccountName: default
       imagePullSecrets:
         - name: ghcr-pull-secret
       containers:
@@ -162,6 +161,7 @@ spec:
       labels:
         app: nowchess-coordinator
     spec:
+      serviceAccountName: default
       imagePullSecrets:
         - name: ghcr-pull-secret
       containers:
