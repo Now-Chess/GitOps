@@ -1,10 +1,10 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: victoria-metrics-operator
+  name: victoria-metrics-crds
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/sync-wave: "-2"
 spec:
   project: default
   destination:
@@ -12,21 +12,15 @@ spec:
     server: https://kubernetes.default.svc
   sources:
     - repoURL: https://victoriametrics.github.io/helm-charts/
-      chart: victoria-metrics-operator
-      targetRevision: 0.62.1
-      helm:
-        valueFiles:
-          - $values/victoria-metrics-operator/eu-central-1/values.yaml
-    - repoURL: git@git.janis-eccarius.de:NowChess/GitOps.git
-      targetRevision: main
-      ref: values
+      chart: victoria-metrics-operator-crds
+      targetRevision: 0.9.0
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true
+      - Replace=true
     retry:
       limit: 3
       backoff:

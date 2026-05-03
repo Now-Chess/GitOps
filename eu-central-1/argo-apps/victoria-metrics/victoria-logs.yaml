@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: victoria-metrics
+  name: victoria-logs
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "0"
@@ -12,11 +12,11 @@ spec:
     server: https://kubernetes.default.svc
   sources:
     - repoURL: https://victoriametrics.github.io/helm-charts/
-      chart: victoria-metrics-k8s-stack
-      targetRevision: 0.76.0
+      chart: victoria-logs-single
+      targetRevision: 0.12.4
       helm:
         valueFiles:
-          - $values/victoria-metrics/eu-central-1/vm-stack-values.yaml
+          - $values/victoria-metrics/eu-central-1/victoria-logs-values.yaml
     - repoURL: git@git.janis-eccarius.de:NowChess/GitOps.git
       targetRevision: main
       ref: values
@@ -26,11 +26,3 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true
-      - SkipDryRunOnMissingResource=true
-    retry:
-      limit: 5
-      backoff:
-        duration: 30s
-        factor: 2
-        maxDuration: 5m
