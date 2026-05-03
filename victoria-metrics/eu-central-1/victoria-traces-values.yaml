@@ -1,5 +1,6 @@
 server:
   retentionPeriod: 7d
+  retentionDiskSpaceUsage: 1500MB
   resources:
     requests:
       cpu: 30m

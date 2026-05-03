@@ -18,6 +18,8 @@ vmsingle:
   spec:
     retentionPeriod: "2"
     replicaCount: 1
+    extraArgs:
+      storage.minFreeDiskSpaceBytes: 500MB
     resources:
       requests:
         cpu: 50m

@@ -100,6 +100,7 @@ fabric.properties
 /argocd/eu-central-1/charts/
 /argo-rollouts/base/charts/
 /kargo/base/charts/
+/victoria-metrics/eu-central-1/charts/
 /kargo/base/kargo-admin-password.yaml
 /cert.pem
 ### Sealed Secrets ###
