@@ -1,0 +1,124 @@
+# victoria-metrics-k8s-stack — all CRDs managed by victoria-metrics-operator
+# VMSingle service: vmsingle-vm-stack.victoria-metrics.svc.cluster.local:8428
+# VMAlert  service: vmalert-vm-stack.victoria-metrics.svc.cluster.local:8080
+
+victoria-metrics-operator:
+  resources:
+    requests:
+      cpu: 20m
+      memory: 30Mi
+    limits:
+      cpu: 200m
+      memory: 60Mi
+  operator:
+    disable_prometheus_converter: false
+
+vmsingle:
+  enabled: true
+  spec:
+    retentionPeriod: "2"
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 50m
+        memory: 80Mi
+      limits:
+        cpu: 500m
+        memory: 150Mi
+    storage:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+
+vmagent:
+  enabled: true
+  spec:
+    scrapeInterval: 60s
+    resources:
+      requests:
+        cpu: 20m
+        memory: 30Mi
+      limits:
+        cpu: 200m
+        memory: 60Mi
+
+vmalert:
+  enabled: true
+  spec:
+    evaluationInterval: 60s
+    resources:
+      requests:
+        cpu: 20m
+        memory: 20Mi
+      limits:
+        cpu: 200m
+        memory: 50Mi
+
+alertmanager:
+  enabled: true
+  spec:
+    replicaCount: 1
+    resources:
+      requests:
+        cpu: 10m
+        memory: 20Mi
+      limits:
+        cpu: 100m
+        memory: 40Mi
+
+grafana:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 80Mi
+    limits:
+      cpu: 300m
+      memory: 150Mi
+  persistence:
+    enabled: false
+  plugins:
+    - victoriametrics-metrics-datasource
+    - victoriametrics-logs-datasource
+  sidecar:
+    datasources:
+      enabled: true
+      label: grafana_datasource
+      labelValue: "1"
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      labelValue: "1"
+      folder: /var/lib/grafana/dashboards
+      defaultFolderName: default
+  grafana.ini:
+    server:
+      root_url: "%(protocol)s://%(domain)s/"
+    auth.anonymous:
+      enabled: false
+
+defaultDashboards:
+  enabled: true
+  defaultTimezone: utc
+
+prometheus-node-exporter:
+  enabled: true
+  resources:
+    requests:
+      cpu: 10m
+      memory: 15Mi
+    limits:
+      cpu: 100m
+      memory: 30Mi
+
+kube-state-metrics:
+  enabled: true
+  resources:
+    requests:
+      cpu: 15m
+      memory: 30Mi
+    limits:
+      cpu: 200m
+      memory: 60Mi
