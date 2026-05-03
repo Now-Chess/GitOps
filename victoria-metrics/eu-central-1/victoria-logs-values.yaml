@@ -13,7 +13,6 @@ server:
     envflag.prefix: VM_
     loggerFormat: json
     search.maxConcurrentRequests: "4"
-    search.maxMemoryPerQuery: 20MB
   persistentVolume:
     enabled: true
     size: 3Gi

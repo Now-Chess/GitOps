@@ -15,6 +15,7 @@ spec:
       chart: victoria-metrics-k8s-stack
       targetRevision: 0.76.0
       helm:
+        releaseName: vm
         valueFiles:
           - $values/victoria-metrics/eu-central-1/vm-stack-values.yaml
     - repoURL: git@git.janis-eccarius.de:NowChess/GitOps.git
