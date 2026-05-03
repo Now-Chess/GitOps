@@ -68,10 +68,17 @@ grafana:
   resources:
     requests:
       cpu: 50m
-      memory: 80Mi
+      memory: 100Mi
     limits:
       cpu: 300m
-      memory: 150Mi
+      memory: 256Mi
+  readinessProbe:
+    httpGet:
+      path: /api/health
+      port: 3000
+    initialDelaySeconds: 60
+    timeoutSeconds: 5
+    failureThreshold: 10
   persistence:
     enabled: false
   plugins:
