@@ -34,10 +34,10 @@ vmagent:
     resources:
       requests:
         cpu: 20m
-        memory: 30Mi
+        memory: 60Mi
       limits:
         cpu: 200m
-        memory: 60Mi
+        memory: 200Mi
 
 vmalert:
   enabled: true
