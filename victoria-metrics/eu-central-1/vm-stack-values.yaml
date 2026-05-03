@@ -2,16 +2,9 @@
 # VMSingle service: vmsingle-vm-stack.victoria-metrics.svc.cluster.local:8428
 # VMAlert  service: vmalert-vm-stack.victoria-metrics.svc.cluster.local:8080
 
+# Operator installed separately (victoria-metrics-operator app, sync-wave -1)
 victoria-metrics-operator:
-  resources:
-    requests:
-      cpu: 20m
-      memory: 30Mi
-    limits:
-      cpu: 200m
-      memory: 60Mi
-  operator:
-    disable_prometheus_converter: false
+  enabled: false
 
 vmsingle:
   enabled: true
