@@ -21,6 +21,17 @@ spec:
     - repoURL: git@git.janis-eccarius.de:NowChess/GitOps.git
       targetRevision: main
       ref: values
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: vm-grafana
+      jsonPointers:
+        - /data
+    - group: apps
+      kind: Deployment
+      name: vm-grafana
+      jqPathExpressions:
+        - .spec.template.metadata.annotations."checksum/secret"
   syncPolicy:
     automated:
       prune: true
@@ -29,6 +40,7 @@ spec:
       - CreateNamespace=true
       - ServerSideApply=true
       - SkipDryRunOnMissingResource=true
+      - RespectIgnoreDifferences=true
     retry:
       limit: 5
       backoff:

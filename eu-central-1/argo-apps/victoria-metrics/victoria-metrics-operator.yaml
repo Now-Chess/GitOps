@@ -20,6 +20,22 @@ spec:
     - repoURL: git@git.janis-eccarius.de:NowChess/GitOps.git
       targetRevision: main
       ref: values
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: victoria-metrics-operator-validation
+      jsonPointers:
+        - /data
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      name: victoria-metrics-operator-admission
+      jqPathExpressions:
+        - .webhooks[].clientConfig.caBundle
+    - group: admissionregistration.k8s.io
+      kind: MutatingWebhookConfiguration
+      name: victoria-metrics-operator-admission
+      jqPathExpressions:
+        - .webhooks[].clientConfig.caBundle
   syncPolicy:
     automated:
       prune: true
@@ -27,6 +43,7 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+      - RespectIgnoreDifferences=true
     retry:
       limit: 3
       backoff:
