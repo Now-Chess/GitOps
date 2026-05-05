@@ -16,10 +16,10 @@ vmsingle:
     resources:
       requests:
         cpu: 50m
-        memory: 80Mi
+        memory: 200Mi
       limits:
         cpu: 500m
-        memory: 150Mi
+        memory: 400Mi
     storage:
       accessModes:
         - ReadWriteOnce
