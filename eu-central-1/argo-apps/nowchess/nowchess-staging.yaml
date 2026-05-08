@@ -10,6 +10,12 @@ spec:
   destination:
     namespace: nowchess-staging
     server: https://kubernetes.default.svc
+  ignoreDifferences:
+    - group: argoproj.io
+      kind: Rollout
+      name: nowchess-core
+      jsonPointers:
+        - /spec/replicas
   sources:
     - repoURL: git@git.janis-eccarius.de:NowChess/Gitops.git
       path: ./nowchess/eu-central-1-staging
