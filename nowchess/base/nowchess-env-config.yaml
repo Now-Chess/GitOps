@@ -8,3 +8,4 @@ data:
   NOWCHESS_COORDINATOR_ENABLED: "true"
   REDIS_PREFIX: nowchess-staging
   QUARKUS_LOG_LEVEL: "INFO"
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://grafana-k8s-monitoring-alloy-receiver.monitoring.svc.cluster.local:4317"
