@@ -20,6 +20,12 @@ spec:
     - repoURL: git@git.janis-eccarius.de:NowChess/GitOps.git
       targetRevision: main
       ref: values
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: grafana-cloud-fleet-management-grafana-alloy-grafana-cloud-onbo
+      jsonPointers:
+        - /data
   syncPolicy:
     automated:
       prune: true
