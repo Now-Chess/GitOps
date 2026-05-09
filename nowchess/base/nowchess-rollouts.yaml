@@ -64,13 +64,13 @@ spec:
             httpGet:
               path: /q/health/live
               port: 8083
-            initialDelaySeconds: 10
+            initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /q/health/ready
               port: 8083
-            initialDelaySeconds: 5
+            initialDelaySeconds: 0
             periodSeconds: 5
           resources:
             requests:
@@ -125,13 +125,13 @@ spec:
             httpGet:
               path: /q/health/live
               port: 8087
-            initialDelaySeconds: 10
+            initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /q/health/ready
               port: 8087
-            initialDelaySeconds: 5
+            initialDelaySeconds: 0
             periodSeconds: 5
           resources:
             requests:
@@ -196,13 +196,13 @@ spec:
             httpGet:
               path: /q/health/live
               port: 8086
-            initialDelaySeconds: 10
+            initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /q/health/ready
               port: 8086
-            initialDelaySeconds: 5
+            initialDelaySeconds: 0
             periodSeconds: 5
           resources:
             requests:
@@ -283,13 +283,13 @@ spec:
             httpGet:
               path: /q/health/live
               port: 8080
-            initialDelaySeconds: 10
+            initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /q/health/ready
               port: 8080
-            initialDelaySeconds: 5
+            initialDelaySeconds: 0
             periodSeconds: 5
           resources:
             requests:
@@ -345,13 +345,13 @@ spec:
             httpGet:
               path: /q/health/live
               port: 8081
-            initialDelaySeconds: 10
+            initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /q/health/ready
               port: 8081
-            initialDelaySeconds: 5
+            initialDelaySeconds: 0
             periodSeconds: 5
           resources:
             requests:
@@ -402,13 +402,13 @@ spec:
             httpGet:
               path: /q/health/live
               port: 8088
-            initialDelaySeconds: 10
+            initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /q/health/ready
               port: 8088
-            initialDelaySeconds: 5
+            initialDelaySeconds: 0
             periodSeconds: 5
           resources:
             requests:
@@ -460,13 +460,13 @@ spec:
             httpGet:
               path: /q/health/live
               port: 8082
-            initialDelaySeconds: 10
+            initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /q/health/ready
               port: 8082
-            initialDelaySeconds: 5
+            initialDelaySeconds: 0
             periodSeconds: 5
           resources:
             requests:
@@ -537,13 +537,13 @@ spec:
             httpGet:
               path: /q/health/live
               port: 8085
-            initialDelaySeconds: 10
+            initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /q/health/ready
               port: 8085
-            initialDelaySeconds: 5
+            initialDelaySeconds: 0
             periodSeconds: 5
           resources:
             requests:
@@ -605,13 +605,13 @@ spec:
             httpGet:
               path: /q/health/live
               port: 8084
-            initialDelaySeconds: 10
+            initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
               path: /q/health/ready
               port: 8084
-            initialDelaySeconds: 5
+            initialDelaySeconds: 0
             periodSeconds: 5
           resources:
             requests:

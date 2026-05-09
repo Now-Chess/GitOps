@@ -1,0 +1,11 @@
+cluster:
+  name: nowchess-eu-central-1
+
+grafanaCloud:
+  fleetManagement:
+    url: https://fleet-management-prod-011.grafana.net
+    auth:
+      username: "1623630"
+      existingSecret:
+        name: grafana-alloy-credentials
+        key: api-key

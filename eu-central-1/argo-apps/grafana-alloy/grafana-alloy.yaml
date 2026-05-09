@@ -1,0 +1,35 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: grafana-alloy
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  destination:
+    namespace: monitoring
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: https://grafana.github.io/helm-charts
+      chart: grafana-cloud-onboarding
+      targetRevision: 0.4.7
+      helm:
+        valueFiles:
+          - $values/grafana-alloy/eu-central-1/values.yaml
+    - repoURL: git@git.janis-eccarius.de:NowChess/GitOps.git
+      targetRevision: main
+      ref: values
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+    retry:
+      limit: 3
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 1m
