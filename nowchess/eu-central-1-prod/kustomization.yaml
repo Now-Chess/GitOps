@@ -22,7 +22,7 @@ patches:
     name: nowchess-env-config
 images:
 - name: ghcr.io/now-chess/now-chess-systems/account
-  newTag: 0.10.0
+  newTag: 0.11.0
 - name: ghcr.io/now-chess/now-chess-systems/bot-platform
   newTag: 0.8.0
 - name: ghcr.io/now-chess/now-chess-systems/coordinator
