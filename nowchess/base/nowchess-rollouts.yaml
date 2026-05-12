@@ -14,7 +14,7 @@ spec:
         app: nowchess-account
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_path: "/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8083"
     spec:
       imagePullSecrets:
@@ -109,7 +109,7 @@ spec:
         app: nowchess-bot-platform
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_path: "/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8087"
     spec:
       imagePullSecrets:
@@ -170,7 +170,7 @@ spec:
         app: nowchess-coordinator
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_path: "/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8086"
     spec:
       serviceAccountName: default
@@ -246,7 +246,7 @@ spec:
         app: nowchess-core
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_path: "/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8080"
     spec:
       imagePullSecrets:
@@ -340,7 +340,7 @@ spec:
         app: nowchess-io
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_path: "/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8081"
     spec:
       imagePullSecrets:
@@ -402,7 +402,7 @@ spec:
         app: nowchess-official-bots
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_path: "/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8088"
     spec:
       imagePullSecrets:
@@ -463,7 +463,7 @@ spec:
         app: nowchess-rule
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_path: "/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8082"
     spec:
       imagePullSecrets:
@@ -525,7 +525,7 @@ spec:
         app: nowchess-store
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_path: "/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8085"
     spec:
       imagePullSecrets:
@@ -606,7 +606,7 @@ spec:
         app: nowchess-ws
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_path: "/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8084"
     spec:
       imagePullSecrets:
