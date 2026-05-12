@@ -57,6 +57,11 @@ spec:
         name: ws
       sources:
         direct: true
+    - origin:
+        kind: Warehouse
+        name: frontend
+      sources:
+        direct: true
   promotionTemplate:
     spec:
       steps:
@@ -136,6 +141,13 @@ spec:
     - origin:
         kind: Warehouse
         name: ws
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: frontend
       sources:
         direct: false
         stages:

@@ -41,6 +41,13 @@ spec:
                 name: nowchess-core-active
                 port:
                   number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-frontend-active
+                port:
+                  number: 80
   tls:
     - hosts:
         - st.nowchess.janis-eccarius.de

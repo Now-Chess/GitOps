@@ -132,3 +132,18 @@ spec:
         imageSelectionStrategy: SemVer
         repoURL: ghcr.io/now-chess/now-chess-systems/ws
         strictSemvers: true
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: frontend
+  namespace: nowchess-kargo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 20
+        imageSelectionStrategy: SemVer
+        repoURL: ghcr.io/now-chess/now-chess-systems/frontend
+        strictSemvers: true

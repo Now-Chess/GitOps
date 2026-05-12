@@ -665,3 +665,61 @@ spec:
       activeService: nowchess-ws-active
       previewService: nowchess-ws-preview
       autoPromotionEnabled: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nowchess-frontend
+  labels:
+    app: nowchess-ws
+spec:
+  selector:
+    matchLabels:
+      app: nowchess-frontend
+  template:
+    metadata:
+      labels:
+        app: nowchess-frontend
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nowchess-frontend
+          image: ghcr.io/now-chess/now-chess-systems/frontend:latest
+          imagePullPolicy: Always
+          env:
+            - name: REACT_APP_API_URL
+              value: http://nowchess-core-active:8080
+            - name: REACT_APP_ACCOUNT_URL
+              value: http://nowchess-account-active:8083
+            - name: REACT_APP_STORE_URL
+              value: http://nowchess-store-active:8085
+            - name: REACT_APP_WS_URL
+              value: http://nowchess-ws-active:8084
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "64Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+  strategy:
+    blueGreen:
+      activeService: nowchess-frontend-active
+      previewService: nowchess-frontend-preview
+      autoPromotionEnabled: true
