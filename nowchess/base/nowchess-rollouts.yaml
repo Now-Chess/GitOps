@@ -13,9 +13,9 @@ spec:
       labels:
         app: nowchess-account
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /q/metrics
-        prometheus.io/port: "8083"
+        k8s.grafana.com/scrape: "true"
+        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_portNumber: "8083"
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
@@ -108,9 +108,9 @@ spec:
       labels:
         app: nowchess-bot-platform
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /q/metrics
-        prometheus.io/port: "8087"
+        k8s.grafana.com/scrape: "true"
+        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_portNumber: "8087"
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
@@ -169,9 +169,9 @@ spec:
       labels:
         app: nowchess-coordinator
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /q/metrics
-        prometheus.io/port: "8086"
+        k8s.grafana.com/scrape: "true"
+        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_portNumber: "8086"
     spec:
       serviceAccountName: default
       imagePullSecrets:
@@ -245,9 +245,9 @@ spec:
       labels:
         app: nowchess-core
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /q/metrics
-        prometheus.io/port: "8080"
+        k8s.grafana.com/scrape: "true"
+        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_portNumber: "8080"
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
@@ -339,9 +339,9 @@ spec:
       labels:
         app: nowchess-io
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /q/metrics
-        prometheus.io/port: "8081"
+        k8s.grafana.com/scrape: "true"
+        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_portNumber: "8081"
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
@@ -401,9 +401,9 @@ spec:
       labels:
         app: nowchess-official-bots
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /q/metrics
-        prometheus.io/port: "8088"
+        k8s.grafana.com/scrape: "true"
+        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_portNumber: "8088"
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
@@ -462,9 +462,9 @@ spec:
       labels:
         app: nowchess-rule
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /q/metrics
-        prometheus.io/port: "8082"
+        k8s.grafana.com/scrape: "true"
+        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_portNumber: "8082"
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
@@ -524,9 +524,9 @@ spec:
       labels:
         app: nowchess-store
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /q/metrics
-        prometheus.io/port: "8085"
+        k8s.grafana.com/scrape: "true"
+        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_portNumber: "8085"
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
@@ -605,9 +605,9 @@ spec:
       labels:
         app: nowchess-ws
       annotations:
-        prometheus.io/scrape: "true"
-        prometheus.io/path: /q/metrics
-        prometheus.io/port: "8084"
+        k8s.grafana.com/scrape: "true"
+        k8s.grafana.com/metrics_path: "/actuator/prometheus"
+        k8s.grafana.com/metrics_portNumber: "8084"
     spec:
       imagePullSecrets:
         - name: ghcr-pull-secret
