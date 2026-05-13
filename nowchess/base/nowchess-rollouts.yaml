@@ -87,6 +87,8 @@ spec:
         - name: jwt-keys
           secret:
             secretName: ncs-jwt-keys
+  rollbackWindow:
+    revisions: 3
   strategy:
     blueGreen:
       activeService: nowchess-account-active
@@ -148,6 +150,8 @@ spec:
             limits:
               cpu: "500m"
               memory: "256Mi"
+  rollbackWindow:
+    revisions: 3
   strategy:
     blueGreen:
       activeService: nowchess-bot-platform-active
@@ -223,6 +227,8 @@ spec:
             limits:
               cpu: "500m"
               memory: "256Mi"
+  rollbackWindow:
+    revisions: 3
   strategy:
     blueGreen:
       activeService: nowchess-coordinator-active
@@ -318,6 +324,8 @@ spec:
         - name: jwt-keys
           secret:
             secretName: ncs-jwt-keys
+  rollbackWindow:
+    revisions: 3
   strategy:
     blueGreen:
       activeService: nowchess-core-active
@@ -380,6 +388,8 @@ spec:
             limits:
               cpu: "500m"
               memory: "256Mi"
+  rollbackWindow:
+    revisions: 3
   strategy:
     blueGreen:
       activeService: nowchess-io-active
@@ -441,6 +451,8 @@ spec:
             limits:
               cpu: "500m"
               memory: "256Mi"
+  rollbackWindow:
+    revisions: 3
   strategy:
     blueGreen:
       activeService: nowchess-official-bots-active
@@ -584,6 +596,8 @@ spec:
             limits:
               cpu: "500m"
               memory: "256Mi"
+  rollbackWindow:
+    revisions: 3
   strategy:
     blueGreen:
       activeService: nowchess-store-active
@@ -660,6 +674,8 @@ spec:
         - name: jwt-keys
           secret:
             secretName: ncs-jwt-keys
+  rollbackWindow:
+    revisions: 3
   strategy:
     blueGreen:
       activeService: nowchess-ws-active
@@ -718,6 +734,8 @@ spec:
             limits:
               cpu: "100m"
               memory: "128Mi"
+  rollbackWindow:
+    revisions: 3
   strategy:
     blueGreen:
       activeService: nowchess-frontend-active
