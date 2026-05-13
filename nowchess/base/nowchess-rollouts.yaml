@@ -14,7 +14,7 @@ spec:
         app: nowchess-account
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/q/metrics"
+        k8s.grafana.com/metrics_path: "/api/account/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8083"
     spec:
       imagePullSecrets:
@@ -246,7 +246,7 @@ spec:
         app: nowchess-core
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/q/metrics"
+        k8s.grafana.com/metrics_path: "/api/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8080"
     spec:
       imagePullSecrets:
@@ -525,7 +525,7 @@ spec:
         app: nowchess-store
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/q/metrics"
+        k8s.grafana.com/metrics_path: "/api/store/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8085"
     spec:
       imagePullSecrets:
@@ -606,7 +606,7 @@ spec:
         app: nowchess-ws
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/q/metrics"
+        k8s.grafana.com/metrics_path: "/ws/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8084"
     spec:
       imagePullSecrets:
