@@ -15,6 +15,7 @@ patches:
       QUARKUS_PROFILE: deployed
       CORS_ORIGINS: https://st.nowchess.janis-eccarius.de
       NOWCHESS_COORDINATOR_ENABLED: "true"
+      NOWCHESS_COORDINATOR_SCALE_MIN_REPLICAS: "1"
       REDIS_PREFIX: nowchess-staging
       QUARKUS_LOG_LEVEL: "INFO"
   target:
