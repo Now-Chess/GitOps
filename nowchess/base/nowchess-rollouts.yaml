@@ -66,13 +66,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /q/health/live
+              path: /api/account/q/health/live
               port: 8083
             initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /q/health/ready
+              path: /api/account/q/health/ready
               port: 8083
             initialDelaySeconds: 0
             periodSeconds: 5
@@ -297,13 +297,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /q/health/live
+              path: /api/q/health/live
               port: 8080
             initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /q/health/ready
+              path: /api/q/health/ready
               port: 8080
             initialDelaySeconds: 0
             periodSeconds: 5
@@ -567,13 +567,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /q/health/live
+              path: /api/store/q/health/live
               port: 8085
             initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /q/health/ready
+              path: /api/store/q/health/ready
               port: 8085
             initialDelaySeconds: 0
             periodSeconds: 5
@@ -639,13 +639,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /q/health/live
+              path: /ws/q/health/live
               port: 8084
             initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /q/health/ready
+              path: /ws/q/health/ready
               port: 8084
             initialDelaySeconds: 0
             periodSeconds: 5
