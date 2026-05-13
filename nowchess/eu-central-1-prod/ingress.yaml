@@ -20,6 +20,13 @@ spec:
                 name: nowchess-account-active
                 port:
                   number: 8083
+          - path: /api/challenge
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-account-active
+                port:
+                  number: 8083
           - path: /ws
             pathType: Prefix
             backend:

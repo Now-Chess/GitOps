@@ -14,7 +14,7 @@ spec:
         app: nowchess-account
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/api/account/q/metrics"
+        k8s.grafana.com/metrics_path: "/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8083"
     spec:
       imagePullSecrets:
@@ -66,13 +66,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /api/account/q/health/live
+              path: /q/health/live
               port: 8083
             initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /api/account/q/health/ready
+              path: /q/health/ready
               port: 8083
             initialDelaySeconds: 0
             periodSeconds: 5
@@ -246,7 +246,7 @@ spec:
         app: nowchess-core
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/api/q/metrics"
+        k8s.grafana.com/metrics_path: "q/metrics"
         k8s.grafana.com/metrics_portNumber: "8080"
     spec:
       imagePullSecrets:
@@ -297,13 +297,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /api/q/health/live
+              path: /q/health/live
               port: 8080
             initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /api/q/health/ready
+              path: /q/health/ready
               port: 8080
             initialDelaySeconds: 0
             periodSeconds: 5
@@ -525,7 +525,7 @@ spec:
         app: nowchess-store
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/api/store/q/metrics"
+        k8s.grafana.com/metrics_path: "store/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8085"
     spec:
       imagePullSecrets:
@@ -567,13 +567,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /api/store/q/health/live
+              path: store/q/health/live
               port: 8085
             initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /api/store/q/health/ready
+              path: store/q/health/ready
               port: 8085
             initialDelaySeconds: 0
             periodSeconds: 5
