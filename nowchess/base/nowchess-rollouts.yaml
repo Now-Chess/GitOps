@@ -606,7 +606,7 @@ spec:
         app: nowchess-ws
       annotations:
         k8s.grafana.com/scrape: "true"
-        k8s.grafana.com/metrics_path: "/ws/q/metrics"
+        k8s.grafana.com/metrics_path: "/q/metrics"
         k8s.grafana.com/metrics_portNumber: "8084"
     spec:
       imagePullSecrets:
@@ -639,13 +639,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /ws/q/health/live
+              path: /q/health/live
               port: 8084
             initialDelaySeconds: 0
             periodSeconds: 10
           readinessProbe:
             httpGet:
-              path: /ws/q/health/ready
+              path: /q/health/ready
               port: 8084
             initialDelaySeconds: 0
             periodSeconds: 5
