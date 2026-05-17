@@ -48,7 +48,7 @@ images:
 - name: ghcr.io/now-chess/now-chess-systems/bot-platform
   newTag: 0.11.0
 - name: ghcr.io/now-chess/now-chess-systems/coordinator
-  newTag: 0.29.0
+  newTag: 0.30.0
 - name: ghcr.io/now-chess/now-chess-systems/core
   newTag: 0.43.0
 - name: ghcr.io/now-chess/now-chess-systems/frontend
