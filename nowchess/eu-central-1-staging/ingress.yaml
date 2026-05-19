@@ -20,6 +20,20 @@ spec:
                 name: nowchess-account-active
                 port:
                   number: 8083
+          - path: /api/board/game/[A-Za-z0-9]{8}/ws
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: nowchess-ws-active
+                port:
+                  number: 8084
+          - path: /api/user/ws
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: nowchess-ws-active
+                port:
+                  number: 8084
           - path: /api/challenge
             pathType: Prefix
             backend:
@@ -27,13 +41,6 @@ spec:
                 name: nowchess-account-active
                 port:
                   number: 8083
-          - path: /ws
-            pathType: Prefix
-            backend:
-              service:
-                name: nowchess-ws-active
-                port:
-                  number: 8084
           - path: /api/store
             pathType: Prefix
             backend:
