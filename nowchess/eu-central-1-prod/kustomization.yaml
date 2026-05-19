@@ -20,6 +20,17 @@ patches:
   target:
     kind: ConfigMap
     name: nowchess-env-config
+- patch: |-
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
+      name: nowchess-frontend-env-config
+    data:
+      API_URL: "https://nowchess.janis-eccarius.de"
+      WEBSOCKET_URL: "wss://nowchess.janis-eccarius.de"
+  target:
+    kind: ConfigMap
+    name: nowchess-frontend-env-config
 images:
 - name: ghcr.io/now-chess/now-chess-systems/account
   newTag: 0.16.0

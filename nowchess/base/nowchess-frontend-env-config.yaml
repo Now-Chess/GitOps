@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nowchess-frontend-env-config
+data:
+  API_URL: "https://st.nowchess.janis-eccarius.de"
+  WEBSOCKET_URL: "wss://st.nowchess.janis-eccarius.de"

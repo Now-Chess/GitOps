@@ -703,15 +703,9 @@ spec:
         - name: nowchess-frontend
           image: ghcr.io/now-chess/now-chess-systems/frontend:latest
           imagePullPolicy: Always
-          env:
-            - name: REACT_APP_API_URL
-              value: http://nowchess-core-active:8080
-            - name: REACT_APP_ACCOUNT_URL
-              value: http://nowchess-account-active:8083
-            - name: REACT_APP_STORE_URL
-              value: http://nowchess-store-active:8085
-            - name: REACT_APP_WS_URL
-              value: http://nowchess-ws-active:8084
+          envFrom:
+            - configMapRef:
+                name: nowchess-frontend-env-config
           ports:
             - containerPort: 80
               protocol: TCP
