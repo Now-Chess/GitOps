@@ -13,13 +13,6 @@ spec:
     - host: st.nowchess.janis-eccarius.de
       http:
         paths:
-          - path: /api/account
-            pathType: Prefix
-            backend:
-              service:
-                name: nowchess-account-active
-                port:
-                  number: 8083
           - path: /api/board/game/[A-Za-z0-9]{8}/ws
             pathType: ImplementationSpecific
             backend:
@@ -34,6 +27,13 @@ spec:
                 name: nowchess-ws-active
                 port:
                   number: 8084
+          - path: /api/account
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-account-active
+                port:
+                  number: 8083
           - path: /api/challenge
             pathType: Prefix
             backend:
