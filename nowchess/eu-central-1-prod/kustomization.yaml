@@ -33,7 +33,7 @@ patches:
     name: nowchess-frontend-env-config
 images:
 - name: ghcr.io/now-chess/now-chess-systems/account
-  newTag: 0.17.0
+  newTag: 0.18.0
 - name: ghcr.io/now-chess/now-chess-systems/bot-platform
   newTag: 0.11.0
 - name: ghcr.io/now-chess/now-chess-systems/coordinator
