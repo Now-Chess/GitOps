@@ -9,10 +9,6 @@ image:
   tag: "8.6.2-trixie"
 
 master:
-  podAnnotations:
-    k8s.grafana.com/scrape: "true"
-    k8s.grafana.com/metrics.portNumber: "9121"
-
   resources:
     requests:
       cpu: 50m
@@ -23,14 +19,3 @@ master:
 
   persistence:
     enabled: false
-
-metrics:
-  enabled: true
-  image:
-    registry: docker.io
-    repository: oliver006/redis_exporter
-    tag: "v1.66.0"
-
-global:
-  security:
-    allowInsecureImages: true
