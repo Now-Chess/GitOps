@@ -73,6 +73,8 @@ applicationObservability:
 annotationAutodiscovery:
   enabled: true
   collector: alloy-metrics
+  bearerToken:
+    enabled: false
   namespaces:
     - nowchess
     - nowchess-staging

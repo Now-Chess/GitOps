@@ -23,3 +23,6 @@ master:
 
   persistence:
     enabled: false
+
+metrics:
+  enabled: true
