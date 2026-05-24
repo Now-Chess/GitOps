@@ -9,6 +9,10 @@ image:
   tag: "8.6.2-trixie"
 
 master:
+  podAnnotations:
+    k8s.grafana.com/scrape: "true"
+    k8s.grafana.com/metrics.portNumber: "9121"
+
   resources:
     requests:
       cpu: 50m

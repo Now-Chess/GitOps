@@ -28,6 +28,7 @@ destinations:
   gc-otlp-endpoint:
     type: otlp
     url: https://otlp-gateway-prod-eu-west-2.grafana.net/otlp
+    protocol: http
     auth:
       type: basic
       username: "1634203"
@@ -54,6 +55,12 @@ podLogsViaLoki:
   namespaces:
     - nowchess
     - nowchess-staging
+  extraDiscoveryRules: |
+    rule {
+      source_labels = ["__meta_kubernetes_pod_container_name"]
+      regex         = "nowchess-frontend"
+      action        = "drop"
+    }
 applicationObservability:
   enabled: true
   collector: alloy-receiver
@@ -69,13 +76,14 @@ annotationAutodiscovery:
   namespaces:
     - nowchess
     - nowchess-staging
+    - redis
   metricsTuning:
     includeMetrics:
       - nowchess.*
       - http_server.*
       - grpc_server.*
       - grpc_client.*
-      - redis.*
+      - redis_stream_length
       - worker_pool.*
       - process_cpu.*
       - process_uptime.*
