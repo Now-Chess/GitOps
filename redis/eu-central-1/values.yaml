@@ -30,3 +30,7 @@ metrics:
     registry: docker.io
     repository: oliver006/redis_exporter
     tag: "v1.66.0"
+
+global:
+  security:
+    allowInsecureImages: true
