@@ -26,3 +26,7 @@ master:
 
 metrics:
   enabled: true
+  image:
+    registry: docker.io
+    repository: oliver006/redis_exporter
+    tag: "v1.66.0"
