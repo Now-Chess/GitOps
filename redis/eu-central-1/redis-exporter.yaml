@@ -21,6 +21,7 @@ spec:
           image: oliver006/redis_exporter:v1.66.0
           args:
             - --redis.addr=redis://redis-master.redis.svc.cluster.local:6379
+            - --check-streams=*:game-writeback,*:game-writeback-dlq
           ports:
             - name: metrics
               containerPort: 9121
