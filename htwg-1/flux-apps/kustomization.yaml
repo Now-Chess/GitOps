@@ -7,7 +7,6 @@ resources:
   - cert-manager.yaml
   - ingress-nginx.yaml
   - sealed-secrets.yaml
-  - metrics-server.yaml
   - redis.yaml
   - argo-rollouts.yaml
   - nowchess.yaml

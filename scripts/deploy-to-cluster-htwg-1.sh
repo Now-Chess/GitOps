@@ -12,7 +12,6 @@ generate_flux_manifests() {
   echo " ⌛ Generate FluxCD manifests"
   echo " ⌛ Install FluxCD controllers"
   echo " ⌛ Setup Sealed Secrets"
-  echo " ⌛ Apply Git source secret"
   echo " ⌛ Bootstrap FluxCD"
   echo "----------------------------------------"
 
@@ -39,7 +38,6 @@ install_flux() {
   echo " ✅ Generate FluxCD manifests"
   echo " ⌛ Install FluxCD controllers"
   echo " ⌛ Setup Sealed Secrets"
-  echo " ⌛ Apply Git source secret"
   echo " ⌛ Bootstrap FluxCD"
   echo "----------------------------------------"
 
@@ -60,7 +58,6 @@ setup_sealed_secrets() {
   echo " ✅ Generate FluxCD manifests"
   echo " ✅ Install FluxCD controllers"
   echo " ⌛ Setup Sealed Secrets"
-  echo " ⌛ Apply Git source secret"
   echo " ⌛ Bootstrap FluxCD"
   echo "----------------------------------------"
 
@@ -70,52 +67,16 @@ setup_sealed_secrets() {
     "$SCRIPT_DIR/sealed-secrets-key.sh" import "$KEY_FILE"
     echo "✅ Sealed-secrets key imported."
   else
-    echo "⚠️  Skipped. New sealed-secrets key will be generated after controller deploys."
-    echo "⚠️  All secrets in secrets/nowchess/htwg-1-prod/ and secrets/flux/ must be re-sealed with the new key."
+    echo "⚠️  Skipped. New key will be generated after controller deploys."
+    echo "⚠️  Re-seal all secrets in secrets/nowchess/htwg-1-prod/ with the new key."
   fi
 
-  # Install sealed-secrets now (before FluxCD bootstraps) so we can decrypt the gitops-ssh secret
   echo "🚀 Installing sealed-secrets controller..."
+  kubectl apply -f "$REPO_ROOT/htwg-1/flux-apps/sources.yaml"
   kubectl apply -f "$REPO_ROOT/htwg-1/flux-apps/sealed-secrets.yaml"
   echo "⏳ Waiting for sealed-secrets controller to be ready (this may take a few minutes)..."
-  kubectl -n kube-system wait helmrelease/sealed-secrets \
-    --for=condition=ready --timeout=300s 2>/dev/null || \
   kubectl -n kube-system rollout status deployment/sealed-secrets --timeout=300s
   echo "✅ Sealed-secrets controller ready!"
-}
-
-# ----
-
-apply_git_source_secret() {
-  clear
-  echo "----------------------------------------"
-  echo " ✅ Generate FluxCD manifests"
-  echo " ✅ Install FluxCD controllers"
-  echo " ✅ Setup Sealed Secrets"
-  echo " ⌛ Apply Git source secret"
-  echo " ⌛ Bootstrap FluxCD"
-  echo "----------------------------------------"
-
-  echo "🔑 Applying gitops-ssh SealedSecret..."
-  GIT_SECRET="$REPO_ROOT/secrets/flux/gitops-ssh-htwg-1.yaml"
-
-  if grep -q "REPLACE_WITH_SEALED_VALUE" "$GIT_SECRET"; then
-    echo "❌ $GIT_SECRET is a placeholder — seal it first:"
-    echo ""
-    echo "  ssh-keygen -t ed25519 -f gitops-deploy-key -N \"\" -C \"flux-htwg-1\""
-    echo "  kubectl -n flux-system create secret generic gitops-ssh \\"
-    echo "    --from-file=identity=./gitops-deploy-key \\"
-    echo "    --from-literal=known_hosts=\"\$(ssh-keyscan -H git.janis-eccarius.de 2>/dev/null)\" \\"
-    echo "    --dry-run=client -o yaml \\"
-    echo "    | kubeseal --controller-namespace kube-system -o yaml > $GIT_SECRET"
-    echo ""
-    echo "  Then add gitops-deploy-key.pub as a deploy key in Gitea:"
-    echo "  https://git.janis-eccarius.de/NowChess/GitOps/settings/keys"
-    exit 1
-  fi
-
-  kubectl apply -f "$GIT_SECRET"
-  echo "✅ gitops-ssh secret applied and will be decrypted by sealed-secrets."
 }
 
 # ----
@@ -126,7 +87,6 @@ bootstrap_flux() {
   echo " ✅ Generate FluxCD manifests"
   echo " ✅ Install FluxCD controllers"
   echo " ✅ Setup Sealed Secrets"
-  echo " ✅ Apply Git source secret"
   echo " ⌛ Bootstrap FluxCD"
   echo "----------------------------------------"
 
@@ -151,7 +111,6 @@ bootstrap_flux() {
 generate_flux_manifests
 install_flux
 setup_sealed_secrets
-apply_git_source_secret
 bootstrap_flux
 
 clear

@@ -1,15 +1,32 @@
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
 metadata:
-  name: postgres-tunnel
-  namespace: flux-system
+  name: postgres
+  namespace: postgres
 spec:
-  interval: 10m
-  retryInterval: 2m
-  sourceRef:
-    kind: GitRepository
-    name: gitops
-    namespace: flux-system
-  path: ./postgres-tunnel/htwg-1
-  prune: true
-  timeout: 3m
+  interval: 1h
+  chart:
+    spec:
+      chart: postgresql
+      version: "16.x"
+      sourceRef:
+        kind: HelmRepository
+        name: bitnami
+        namespace: flux-system
+  values:
+    auth:
+      database: nowchess
+      existingSecret: postgres-credentials
+      secretKeys:
+        adminPasswordKey: postgres-password
+    primary:
+      persistence:
+        enabled: true
+        size: 5Gi
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi

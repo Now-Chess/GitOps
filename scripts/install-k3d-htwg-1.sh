@@ -68,7 +68,8 @@ create_cluster() {
     --port "80:80@loadbalancer" \
     --port "443:443@loadbalancer" \
     --k3s-arg "--disable=traefik@server:0" \
-    --k3s-arg "--disable=servicelb@server:0"
+    --k3s-arg "--disable=servicelb@server:0" \
+    --k3s-arg "--disable=metrics-server@server:0"
 
   echo "✅ Cluster '${CLUSTER_NAME}' created!"
 }
