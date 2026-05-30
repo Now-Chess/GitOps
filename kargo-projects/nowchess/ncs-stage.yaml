@@ -157,3 +157,93 @@ spec:
       steps:
         - task:
             name: nowchess-kargo-promotion-template
+---
+kind: Stage
+apiVersion: kargo.akuity.io/v1alpha1
+metadata:
+  name: htwg-1-prod
+  namespace: nowchess-kargo
+  annotations:
+    kargo.akuity.io/color: amber
+spec:
+  vars:
+    - name: folder
+      value: htwg-1-prod
+    - name: skipArgocdUpdate
+      value: "true"
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: account
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: bot-platform
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: coordinator
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: core
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: io
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: official-bots
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: rule
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: store
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: ws
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: frontend
+      sources:
+        direct: false
+        stages:
+          - staging
+  promotionTemplate:
+    spec:
+      steps:
+        - task:
+            name: nowchess-kargo-promotion-template
