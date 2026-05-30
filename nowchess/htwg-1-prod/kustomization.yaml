@@ -2,52 +2,52 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: nowchess
 resources:
-  - ../base
-  - ingress.yaml
+- ../base
+- ingress.yaml
 patches:
-  - patch: |-
-      apiVersion: v1
-      kind: ConfigMap
-      metadata:
-        name: nowchess-env-config
-      data:
-        QUARKUS_PROFILE: deployed
-        CORS_ORIGINS: http://141.37.74.142
-        NOWCHESS_COORDINATOR_ENABLED: "false"
-        REDIS_PREFIX: nowchess
-        QUARKUS_LOG_LEVEL: "WARN"
-    target:
-      kind: ConfigMap
+- patch: |-
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
       name: nowchess-env-config
-  - patch: |-
-      apiVersion: v1
-      kind: ConfigMap
-      metadata:
-        name: nowchess-frontend-env-config
-      data:
-        API_URL: "http://141.37.74.142"
-        WEBSOCKET_URL: "ws://141.37.74.142"
-    target:
-      kind: ConfigMap
+    data:
+      QUARKUS_PROFILE: deployed
+      CORS_ORIGINS: http://141.37.74.142
+      NOWCHESS_COORDINATOR_ENABLED: "false"
+      REDIS_PREFIX: nowchess
+      QUARKUS_LOG_LEVEL: "WARN"
+  target:
+    kind: ConfigMap
+    name: nowchess-env-config
+- patch: |-
+    apiVersion: v1
+    kind: ConfigMap
+    metadata:
       name: nowchess-frontend-env-config
+    data:
+      API_URL: "http://141.37.74.142"
+      WEBSOCKET_URL: "ws://141.37.74.142"
+  target:
+    kind: ConfigMap
+    name: nowchess-frontend-env-config
 images:
-  - name: ghcr.io/now-chess/now-chess-systems/account
-    newTag: 0.18.0
-  - name: ghcr.io/now-chess/now-chess-systems/bot-platform
-    newTag: 0.11.0
-  - name: ghcr.io/now-chess/now-chess-systems/coordinator
-    newTag: 0.32.0
-  - name: ghcr.io/now-chess/now-chess-systems/core
-    newTag: 0.45.0
-  - name: ghcr.io/now-chess/now-chess-systems/frontend
-    newTag: 0.2.4
-  - name: ghcr.io/now-chess/now-chess-systems/io
-    newTag: 0.22.0
-  - name: ghcr.io/now-chess/now-chess-systems/official-bots
-    newTag: 0.13.0
-  - name: ghcr.io/now-chess/now-chess-systems/rule
-    newTag: 0.18.0
-  - name: ghcr.io/now-chess/now-chess-systems/store
-    newTag: 0.22.0
-  - name: ghcr.io/now-chess/now-chess-systems/ws
-    newTag: 0.14.0
+- name: ghcr.io/now-chess/now-chess-systems/account
+  newTag: 0.18.0
+- name: ghcr.io/now-chess/now-chess-systems/bot-platform
+  newTag: 0.11.0
+- name: ghcr.io/now-chess/now-chess-systems/coordinator
+  newTag: 0.32.0
+- name: ghcr.io/now-chess/now-chess-systems/core
+  newTag: 0.45.0
+- name: ghcr.io/now-chess/now-chess-systems/frontend
+  newTag: 0.2.4
+- name: ghcr.io/now-chess/now-chess-systems/io
+  newTag: 0.22.0
+- name: ghcr.io/now-chess/now-chess-systems/official-bots
+  newTag: 0.13.0
+- name: ghcr.io/now-chess/now-chess-systems/rule
+  newTag: 0.18.0
+- name: ghcr.io/now-chess/now-chess-systems/store
+  newTag: 0.22.0
+- name: ghcr.io/now-chess/now-chess-systems/ws
+  newTag: 0.14.0
