@@ -105,7 +105,6 @@ fabric.properties
 ### Sealed Secrets ###
 /scripts/sealed-key.yaml
 
-# Unsealed Secret files (templates for kubeseal)
-secrets/**
+# All secrets are SealedSecrets — safe to commit
+# kustomization.yaml and *.yaml are tracked; raw *.yml files are not
 secrets/**/*.yml
-!secrets/kustomization.yaml
