@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - gitrepository.yaml
+  - namespaces.yaml
+  - sources.yaml
+  - cert-manager.yaml
+  - ingress-nginx.yaml
+  - sealed-secrets.yaml
+  - metrics-server.yaml
+  - redis.yaml
+  - argo-rollouts.yaml
+  - nowchess.yaml
+  - postgres-tunnel.yaml
+  - secrets.yaml

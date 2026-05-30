@@ -108,3 +108,4 @@ fabric.properties
 # All secrets are SealedSecrets — safe to commit
 # kustomization.yaml and *.yaml are tracked; raw *.yml files are not
 secrets/**/*.yml
+/scripts/sealed-secrets-key-backup.yaml

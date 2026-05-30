@@ -1,0 +1,62 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nowchess-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /api/board/game/[A-Za-z0-9]{8}/ws
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: nowchess-ws-active
+                port:
+                  number: 8084
+          - path: /api/user/ws
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: nowchess-ws-active
+                port:
+                  number: 8084
+          - path: /api/account
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-account-active
+                port:
+                  number: 8083
+          - path: /api/challenge
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-account-active
+                port:
+                  number: 8083
+          - path: /api/store
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-store-active
+                port:
+                  number: 8085
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-core-active
+                port:
+                  number: 8080
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-frontend-active
+                port:
+                  number: 80
