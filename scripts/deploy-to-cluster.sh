@@ -40,11 +40,24 @@ install_argocd() {
 install_cert_manager
 install_argocd
 
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.15.1/deploy/static/provider/baremetal/deploy.yaml
+# Restore sealed-secrets key before ArgoCD syncs so existing SealedSecrets decrypt correctly.
+# Export from old cluster first: ./sealed-secrets-key.sh export sealed-secrets-key-backup.yaml
+echo "🔑 Restoring sealed-secrets key..."
+read -rp "Path to sealed-secrets key backup (leave blank to skip): " KEY_FILE
+if [[ -n "$KEY_FILE" ]]; then
+  ./sealed-secrets-key.sh import "$KEY_FILE"
+else
+  echo "⚠️  Skipped. SealedSecrets will fail to decrypt until key is imported."
+fi
+
 kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
 sleep 5s
 
 kubectl apply -f ../eu-central-1/root-apps-app.yaml
+
+echo "📊 Installing Grafana monitoring..."
+./metrics-deployment-values.sh
+echo "✅ Grafana monitoring installed!"
 
 clear
 
