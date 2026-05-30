@@ -17,13 +17,16 @@ generate_flux_manifests() {
   echo "----------------------------------------"
 
   GOTK="$REPO_ROOT/htwg-1/flux-system/gotk-components.yaml"
-  if [[ -f "$GOTK" ]]; then
-    echo "✅ gotk-components.yaml already exists, skipping generation."
+  if [[ -s "$GOTK" ]]; then
+    echo "✅ gotk-components.yaml already exists, skipping download."
   else
-    echo "🚀 Generating FluxCD controller manifests..."
-    flux install --export > "$GOTK"
-    echo "✅ Generated $GOTK"
-    echo "⚠️  Commit this file to the repository before continuing."
+    echo "🚀 Downloading FluxCD controller manifests..."
+    FLUX_VERSION=$(curl -Ls https://api.github.com/repos/fluxcd/flux2/releases/latest \
+      | grep '"tag_name"' | cut -d'"' -f4)
+    curl -Lo "$GOTK" \
+      "https://github.com/fluxcd/flux2/releases/download/${FLUX_VERSION}/install.yaml"
+    echo "✅ Downloaded FluxCD ${FLUX_VERSION} → $GOTK"
+    echo "⚠️  Commit this file to the repository."
     read -rp "Press Enter after committing gotk-components.yaml..."
   fi
 }
