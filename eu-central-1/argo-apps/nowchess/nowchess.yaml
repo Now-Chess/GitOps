@@ -4,7 +4,7 @@ metadata:
   name: nowchess
   namespace: argocd
   annotations:
-    kargo.akuity.io/authorized-stage: nowchess-kargo:prod
+    kargo.akuity.io/authorized-stage: nowchess-kargo:eu-central-1-prod
 spec:
   project: default
   destination:

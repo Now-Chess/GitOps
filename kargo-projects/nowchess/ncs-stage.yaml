@@ -71,7 +71,7 @@ spec:
 kind: Stage
 apiVersion: kargo.akuity.io/v1alpha1
 metadata:
-  name: prod
+  name: eu-central-1-prod
   namespace: nowchess-kargo
   annotations:
     kargo.akuity.io/color: green
