@@ -1,25 +1,25 @@
-#apiVersion: argoproj.io/v1alpha1
-#kind: Application
-#metadata:
-#  name: metrics-server
-#  namespace: argocd
-#spec:
-#  project: default
-#  destination:
-#    namespace: kube-system
-#    server: https://kubernetes.default.svc
-#  sources:
-#    - repoURL: https://kubernetes-sigs.github.io/metrics-server/
-#      chart: metrics-server
-#      targetRevision: 3.13.0
-#      helm:
-#        valueFiles:
-#          - $values/metrics-server/eu-central-1/values.yaml
-#    - repoURL: git@git.janis-eccarius.de:NowChess/GitOps.git
-#      path: ./metrics-server/eu-central-1
-#      ref: values
-#      targetRevision: main
-#  syncPolicy:
-#    automated:
-#      prune: true
-#      selfHeal: true
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metrics-server
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: kube-system
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: https://kubernetes-sigs.github.io/metrics-server/
+      chart: metrics-server
+      targetRevision: 3.13.0
+      helm:
+        valueFiles:
+          - $values/metrics-server/eu-central-1/values.yaml
+    - repoURL: git@git.janis-eccarius.de:NowChess/GitOps.git
+      path: ./metrics-server/eu-central-1
+      ref: values
+      targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
