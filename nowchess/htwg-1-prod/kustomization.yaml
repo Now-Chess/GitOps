@@ -50,4 +50,4 @@ images:
 - name: ghcr.io/now-chess/now-chess-systems/store
   newTag: 0.23.0-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/ws
-  newTag: 0.14.0
+  newTag: 0.14.0-x86_v2
