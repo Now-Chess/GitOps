@@ -28,6 +28,7 @@ patches:
       name: nowchess-account
     spec:
       minReplicas: 1
+      maxReplicas: 1
 - patch: |-
     apiVersion: autoscaling/v2
     kind: HorizontalPodAutoscaler
@@ -35,6 +36,42 @@ patches:
       name: nowchess-ws
     spec:
       minReplicas: 1
+      maxReplicas: 1
+- patch: |-
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    metadata:
+      name: nowchess-bot-platform
+    spec:
+      maxReplicas: 1
+- patch: |-
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    metadata:
+      name: nowchess-io
+    spec:
+      maxReplicas: 1
+- patch: |-
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    metadata:
+      name: nowchess-official-bots
+    spec:
+      maxReplicas: 1
+- patch: |-
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    metadata:
+      name: nowchess-rule
+    spec:
+      maxReplicas: 1
+- patch: |-
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    metadata:
+      name: nowchess-store
+    spec:
+      maxReplicas: 1
 - patch: |-
     apiVersion: argoproj.io/v1alpha1
     kind: Rollout
