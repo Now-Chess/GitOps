@@ -17,51 +17,61 @@ spec:
         name: account
       sources:
         direct: true
+        requiredSoakTime: 5m
     - origin:
         kind: Warehouse
         name: bot-platform
       sources:
         direct: true
+        requiredSoakTime: 5m
     - origin:
         kind: Warehouse
         name: coordinator
       sources:
         direct: true
+        requiredSoakTime: 5m
     - origin:
         kind: Warehouse
         name: core
       sources:
         direct: true
+        requiredSoakTime: 5m
     - origin:
         kind: Warehouse
         name: io
       sources:
         direct: true
+        requiredSoakTime: 5m
     - origin:
         kind: Warehouse
         name: official-bots
       sources:
         direct: true
+        requiredSoakTime: 5m
     - origin:
         kind: Warehouse
         name: rule
       sources:
         direct: true
+        requiredSoakTime: 5m
     - origin:
         kind: Warehouse
         name: store
       sources:
         direct: true
+        requiredSoakTime: 5m
     - origin:
         kind: Warehouse
         name: ws
       sources:
         direct: true
+        requiredSoakTime: 5m
     - origin:
         kind: Warehouse
         name: frontend
       sources:
         direct: true
+        requiredSoakTime: 5m
   promotionTemplate:
     spec:
       steps:
@@ -171,6 +181,8 @@ spec:
       value: htwg-1-prod
     - name: skipArgocdUpdate
       value: "true"
+    - name: tagSuffix
+      value: "-x86_v2"
   requestedFreight:
     - origin:
         kind: Warehouse
