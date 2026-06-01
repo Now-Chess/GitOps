@@ -17,61 +17,61 @@ spec:
         name: account
       sources:
         direct: true
-        requiredSoakTime: 5m
+        requiredSoakTime: 5m0s
     - origin:
         kind: Warehouse
         name: bot-platform
       sources:
         direct: true
-        requiredSoakTime: 5m
+        requiredSoakTime: 5m0s
     - origin:
         kind: Warehouse
         name: coordinator
       sources:
         direct: true
-        requiredSoakTime: 5m
+        requiredSoakTime: 5m0s
     - origin:
         kind: Warehouse
         name: core
       sources:
         direct: true
-        requiredSoakTime: 5m
+        requiredSoakTime: 5m0s
     - origin:
         kind: Warehouse
         name: io
       sources:
         direct: true
-        requiredSoakTime: 5m
+        requiredSoakTime: 5m0s
     - origin:
         kind: Warehouse
         name: official-bots
       sources:
         direct: true
-        requiredSoakTime: 5m
+        requiredSoakTime: 5m0s
     - origin:
         kind: Warehouse
         name: rule
       sources:
         direct: true
-        requiredSoakTime: 5m
+        requiredSoakTime: 5m0s
     - origin:
         kind: Warehouse
         name: store
       sources:
         direct: true
-        requiredSoakTime: 5m
+        requiredSoakTime: 5m0s
     - origin:
         kind: Warehouse
         name: ws
       sources:
         direct: true
-        requiredSoakTime: 5m
+        requiredSoakTime: 5m0s
     - origin:
         kind: Warehouse
         name: frontend
       sources:
         direct: true
-        requiredSoakTime: 5m
+        requiredSoakTime: 5m0s
   promotionTemplate:
     spec:
       steps:
