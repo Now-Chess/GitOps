@@ -15,7 +15,7 @@ spec:
                 restartPolicy: Never
                 containers:
                   - name: remotek6-client
-                    image: ghcr.io/now-chess/remotek6-client:main
+                    image: ghcr.io/16janis12/remotek6-client:main
                     imagePullPolicy: Always
                     env:
                       - name: SERVER_URL
@@ -62,7 +62,7 @@ spec:
                 restartPolicy: Never
                 containers:
                   - name: remotek6-client
-                    image: ghcr.io/now-chess/remotek6-client:main
+                    image: ghcr.io/16janis12/remotek6-client:main
                     imagePullPolicy: Always
                     env:
                       - name: SERVER_URL
