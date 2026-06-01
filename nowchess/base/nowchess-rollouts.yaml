@@ -94,6 +94,7 @@ spec:
       activeService: nowchess-account-active
       previewService: nowchess-account-preview
       autoPromotionEnabled: true
+      previewReplicaCount: 1
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
@@ -157,6 +158,7 @@ spec:
       activeService: nowchess-bot-platform-active
       previewService: nowchess-bot-platform-preview
       autoPromotionEnabled: true
+      previewReplicaCount: 1
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
@@ -234,6 +236,7 @@ spec:
       activeService: nowchess-coordinator-active
       previewService: nowchess-coordinator-preview
       autoPromotionEnabled: true
+      previewReplicaCount: 1
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
@@ -331,6 +334,7 @@ spec:
       activeService: nowchess-core-active
       previewService: nowchess-core-preview
       autoPromotionEnabled: true
+      previewReplicaCount: 1
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
@@ -395,6 +399,7 @@ spec:
       activeService: nowchess-io-active
       previewService: nowchess-io-preview
       autoPromotionEnabled: true
+      previewReplicaCount: 1
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
@@ -458,6 +463,7 @@ spec:
       activeService: nowchess-official-bots-active
       previewService: nowchess-official-bots-preview
       autoPromotionEnabled: true
+      previewReplicaCount: 1
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
@@ -520,6 +526,7 @@ spec:
       activeService: nowchess-rule-active
       previewService: nowchess-rule-preview
       autoPromotionEnabled: true
+      previewReplicaCount: 1
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
@@ -603,6 +610,7 @@ spec:
       activeService: nowchess-store-active
       previewService: nowchess-store-preview
       autoPromotionEnabled: true
+      previewReplicaCount: 1
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
@@ -681,6 +689,7 @@ spec:
       activeService: nowchess-ws-active
       previewService: nowchess-ws-preview
       autoPromotionEnabled: true
+      previewReplicaCount: 1
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
@@ -735,3 +744,4 @@ spec:
       activeService: nowchess-frontend-active
       previewService: nowchess-frontend-preview
       autoPromotionEnabled: true
+      previewReplicaCount: 1
