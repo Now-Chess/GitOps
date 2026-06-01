@@ -11,6 +11,8 @@ spec:
       value: nowchess-staging
     - name: folder
       value: eu-central-1-staging
+    - name: tagSuffix
+      value: ""
   requestedFreight:
     - origin:
         kind: Warehouse
@@ -91,6 +93,8 @@ spec:
       value: nowchess
     - name: folder
       value: eu-central-1-prod
+    - name: tagSuffix
+      value: ""
   requestedFreight:
     - origin:
         kind: Warehouse
