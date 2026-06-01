@@ -15,8 +15,6 @@ spec:
       value: 'ghcr.io/now-chess/now-chess-systems/${{ vars.component }}'
     - name: branch
       value: main
-    - name: tagSuffix
-      value: ""
     - name: imageTag
       value: ${{ imageFrom(vars.imageRepoUrl).Tag }}${{ vars.tagSuffix }}
     - name: discordWebhook

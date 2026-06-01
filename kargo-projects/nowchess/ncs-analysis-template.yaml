@@ -1,0 +1,100 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AnalysisTemplate
+metadata:
+  name: nowchess-performance-tests
+  namespace: nowchess-kargo
+spec:
+  metrics:
+    - name: smoke-test
+      provider:
+        job:
+          spec:
+            backoffLimit: 0
+            template:
+              spec:
+                restartPolicy: Never
+                containers:
+                  - name: remotek6-client
+                    image: ghcr.io/now-chess/remotek6-client:main
+                    imagePullPolicy: Always
+                    env:
+                      - name: SERVER_URL
+                        value: "https://130.61.135.202:6138"
+                      - name: GIT_URL
+                        value: "https://git.janis-eccarius.de/NowChess/PerformanceTests.git"
+                      - name: SCRIPT_PATH
+                        value: "simulations/smokeTest.js"
+                      - name: CONTAINER_ID
+                        valueFrom:
+                          fieldRef:
+                            fieldPath: metadata.uid
+                      - name: K6_ENV_BASE_URL
+                        value: "https://st.nowchess.janis-eccarius.de"
+                      - name: CLIENT_CERT
+                        value: /certs/client.crt
+                      - name: CLIENT_KEY
+                        value: /certs/client.key
+                      - name: CA_CERT
+                        value: /certs/ca.crt
+                    volumeMounts:
+                      - name: certs
+                        mountPath: /certs
+                        readOnly: true
+                    resources:
+                      requests:
+                        memory: "16Mi"
+                        cpu: "10m"
+                      limits:
+                        memory: "32Mi"
+                        cpu: "100m"
+                volumes:
+                  - name: certs
+                    secret:
+                      secretName: remotek6-certs
+    - name: load-test
+      initialDelay: 2m0s
+      provider:
+        job:
+          spec:
+            backoffLimit: 0
+            template:
+              spec:
+                restartPolicy: Never
+                containers:
+                  - name: remotek6-client
+                    image: ghcr.io/now-chess/remotek6-client:main
+                    imagePullPolicy: Always
+                    env:
+                      - name: SERVER_URL
+                        value: "https://130.61.135.202:6138"
+                      - name: GIT_URL
+                        value: "https://git.janis-eccarius.de/NowChess/PerformanceTests.git"
+                      - name: SCRIPT_PATH
+                        value: "simulations/loadTest.js"
+                      - name: CONTAINER_ID
+                        valueFrom:
+                          fieldRef:
+                            fieldPath: metadata.uid
+                      - name: K6_ENV_BASE_URL
+                        value: "https://st.nowchess.janis-eccarius.de"
+                      - name: CLIENT_CERT
+                        value: /certs/client.crt
+                      - name: CLIENT_KEY
+                        value: /certs/client.key
+                      - name: CA_CERT
+                        value: /certs/ca.crt
+                    volumeMounts:
+                      - name: certs
+                        mountPath: /certs
+                        readOnly: true
+                    resources:
+                      requests:
+                        memory: "16Mi"
+                        cpu: "10m"
+                      limits:
+                        memory: "32Mi"
+                        cpu: "100m"
+                volumes:
+                  - name: certs
+                    secret:
+                      secretName: remotek6-certs

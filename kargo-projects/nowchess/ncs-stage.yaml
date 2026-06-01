@@ -74,6 +74,9 @@ spec:
       sources:
         direct: true
         requiredSoakTime: 5m0s
+  verification:
+    analysisTemplates:
+      - name: nowchess-performance-tests
   promotionTemplate:
     spec:
       steps:

@@ -6,3 +6,4 @@ resources:
   - ncs-warehouse.yaml
   - ncs-stage.yaml
   - ncs-promotion-template.yaml
+  - ncs-analysis-template.yaml
