@@ -11,7 +11,7 @@ spec:
   sources:
     - repoURL: https://argoproj.github.io/argo-helm
       chart: argo-rollouts
-      targetRevision: 2.40.10
+      targetRevision: 2.41.0
       helm:
         valueFiles:
           - $values/argo-rollouts/eu-central-1/values.yaml
