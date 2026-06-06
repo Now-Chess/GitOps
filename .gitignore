@@ -109,3 +109,6 @@ fabric.properties
 # kustomization.yaml and *.yaml are tracked; raw *.yml files are not
 secrets/**/*.yml
 /scripts/sealed-secrets-key-backup.yaml
+
+# Claude Code
+/.claude/worktrees/
