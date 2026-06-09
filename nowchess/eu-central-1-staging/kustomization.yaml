@@ -73,6 +73,13 @@ patches:
     spec:
       maxReplicas: 1
 - patch: |-
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    metadata:
+      name: nowchess-tournament
+    spec:
+      maxReplicas: 1
+- patch: |-
     apiVersion: argoproj.io/v1alpha1
     kind: Rollout
     metadata:
@@ -98,6 +105,8 @@ images:
   newTag: 0.18.0
 - name: ghcr.io/now-chess/now-chess-systems/store
   newTag: 0.24.0
+- name: ghcr.io/now-chess/now-chess-systems/tournament
+  newTag: 0.1.0
 - name: ghcr.io/now-chess/now-chess-systems/ws
   newTag: 0.14.0
 configurations:

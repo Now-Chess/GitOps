@@ -48,6 +48,13 @@ spec:
                 name: nowchess-store-active
                 port:
                   number: 8085
+          - path: /api/tournament
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-tournament-active
+                port:
+                  number: 8088
           - path: /api
             pathType: Prefix
             backend:

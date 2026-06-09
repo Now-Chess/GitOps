@@ -745,3 +745,99 @@ spec:
       previewService: nowchess-frontend-preview
       autoPromotionEnabled: true
       previewReplicaCount: 1
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
+  name: nowchess-tournament
+  labels:
+    app: nowchess-tournament
+spec:
+  selector:
+    matchLabels:
+      app: nowchess-tournament
+  template:
+    metadata:
+      labels:
+        app: nowchess-tournament
+      annotations:
+        k8s.grafana.com/scrape: "true"
+        k8s.grafana.com/metrics_path: "/q/metrics"
+        k8s.grafana.com/metrics_portNumber: "8088"
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nowchess-tournament
+          image: ghcr.io/now-chess/now-chess-systems/tournament:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nowchess-env-config
+          env:
+            - name: REDIS_HOST
+              value: redis-master.redis.svc.cluster.local
+            - name: REDIS_PORT
+              value: "6379"
+            - name: INTERNAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-internal-secret
+                  key: INTERNAL_SECRET
+            - name: QUARKUS_REST_CLIENT_CORE_SERVICE_URL
+              value: http://nowchess-core-active:8080
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-db-secrets
+                  key: TOURNAMENT_DB_USER
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-db-secrets
+                  key: TOURNAMENT_DB_PASSWORD
+            - name: DB_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-db-secrets
+                  key: TOURNAMENT_DB_URL
+            - name: MP_JWT_VERIFY_PUBLICKEY_LOCATION
+              value: /secrets/jwt/public.pem
+          volumeMounts:
+            - name: jwt-keys
+              mountPath: /secrets/jwt
+              readOnly: true
+          ports:
+            - containerPort: 8088
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8088
+            initialDelaySeconds: 0
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8088
+            initialDelaySeconds: 0
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "5m"
+              memory: "96Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+      volumes:
+        - name: jwt-keys
+          secret:
+            secretName: ncs-jwt-keys
+  rollbackWindow:
+    revisions: 3
+  strategy:
+    blueGreen:
+      activeService: nowchess-tournament-active
+      previewService: nowchess-tournament-preview
+      autoPromotionEnabled: true
+      previewReplicaCount: 1

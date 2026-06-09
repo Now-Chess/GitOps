@@ -247,3 +247,27 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-tournament-active
+spec:
+  selector:
+    app: nowchess-tournament
+  ports:
+    - protocol: TCP
+      port: 8088
+      targetPort: 8088
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nowchess-tournament-preview
+spec:
+  selector:
+    app: nowchess-tournament
+  ports:
+    - protocol: TCP
+      port: 8088
+      targetPort: 8088
