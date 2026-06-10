@@ -434,6 +434,11 @@ spec:
               value: redis-master.redis.svc.cluster.local
             - name: REDIS_PORT
               value: "6379"
+            - name: INTERNAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-internal-secret
+                  key: INTERNAL_SECRET
           ports:
             - containerPort: 8088
               protocol: TCP
