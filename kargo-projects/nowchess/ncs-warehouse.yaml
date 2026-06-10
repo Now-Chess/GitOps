@@ -1,6 +1,21 @@
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
 metadata:
+  name: analysis
+  namespace: nowchess-kargo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 20
+        imageSelectionStrategy: SemVer
+        repoURL: ghcr.io/now-chess/now-chess-systems/analysis
+        strictSemvers: true
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
   name: account
   namespace: nowchess-kargo
 spec:

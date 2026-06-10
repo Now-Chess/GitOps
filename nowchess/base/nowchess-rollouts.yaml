@@ -756,6 +756,73 @@ spec:
 apiVersion: argoproj.io/v1alpha1
 kind: Rollout
 metadata:
+  name: nowchess-analysis
+  labels:
+    app: nowchess-analysis
+    app.kubernetes.io/name: nowchess-analysis
+    app.kubernetes.io/part-of: nowchess
+spec:
+  selector:
+    matchLabels:
+      app: nowchess-analysis
+  template:
+    metadata:
+      labels:
+        app: nowchess-analysis
+      annotations:
+        k8s.grafana.com/scrape: "true"
+        k8s.grafana.com/metrics_path: "/q/metrics"
+        k8s.grafana.com/metrics_portNumber: "8087"
+    spec:
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: nowchess-analysis
+          image: ghcr.io/now-chess/now-chess-systems/analysis:latest
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: nowchess-env-config
+          env:
+            - name: INTERNAL_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-internal-secret
+                  key: INTERNAL_SECRET
+          ports:
+            - containerPort: 8087
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /q/health/live
+              port: 8087
+            initialDelaySeconds: 0
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /q/health/ready
+              port: 8087
+            initialDelaySeconds: 0
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: "5m"
+              memory: "96Mi"
+            limits:
+              cpu: "500m"
+              memory: "256Mi"
+  rollbackWindow:
+    revisions: 3
+  strategy:
+    blueGreen:
+      activeService: nowchess-analysis-active
+      previewService: nowchess-analysis-preview
+      autoPromotionEnabled: true
+      previewReplicaCount: 1
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Rollout
+metadata:
   name: nowchess-tournament
   labels:
     app: nowchess-tournament

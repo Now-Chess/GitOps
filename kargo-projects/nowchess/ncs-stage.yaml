@@ -16,6 +16,12 @@ spec:
   requestedFreight:
     - origin:
         kind: Warehouse
+        name: analysis
+      sources:
+        direct: true
+        requiredSoakTime: 5m0s
+    - origin:
+        kind: Warehouse
         name: account
       sources:
         direct: true
@@ -99,6 +105,13 @@ spec:
     - name: tagSuffix
       value: ""
   requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: analysis
+      sources:
+        direct: false
+        stages:
+          - staging
     - origin:
         kind: Warehouse
         name: account
@@ -191,6 +204,13 @@ spec:
     - name: tagSuffix
       value: "-x86_v2"
   requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: analysis
+      sources:
+        direct: false
+        stages:
+          - staging
     - origin:
         kind: Warehouse
         name: account
