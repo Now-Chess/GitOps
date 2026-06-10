@@ -53,7 +53,7 @@ images:
 - name: ghcr.io/now-chess/now-chess-systems/tournament
   newTag: 0.1.0
 - name: ghcr.io/now-chess/now-chess-systems/ws
-  newTag: 0.14.0
+  newTag: 0.16.0
 configurations:
 - rollout-transform.yaml
 openapi:
