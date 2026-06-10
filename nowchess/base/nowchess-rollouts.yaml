@@ -797,17 +797,17 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: ncs-db-secrets
-                  key: TOURNAMENT_DB_USER
+                  key: ACCOUNT_DB_USER
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: ncs-db-secrets
-                  key: TOURNAMENT_DB_PASSWORD
+                  key: ACCOUNT_DB_PASSWORD
             - name: DB_URL
               valueFrom:
                 secretKeyRef:
                   name: ncs-db-secrets
-                  key: TOURNAMENT_DB_URL
+                  key: ACCOUNT_DB_URL
             - name: MP_JWT_VERIFY_PUBLICKEY_LOCATION
               value: /secrets/jwt/public.pem
           volumeMounts:
