@@ -439,6 +439,8 @@ spec:
                 secretKeyRef:
                   name: ncs-internal-secret
                   key: INTERNAL_SECRET
+            - name: ACCOUNT_SERVICE_URL
+              value: http://nowchess-account:8083
           ports:
             - containerPort: 8088
               protocol: TCP
