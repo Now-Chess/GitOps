@@ -1,6 +1,28 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
+  name: nowchess-analysis
+  labels:
+    app.kubernetes.io/name: nowchess-analysis
+    app.kubernetes.io/part-of: nowchess
+spec:
+  scaleTargetRef:
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    name: nowchess-analysis
+  minReplicas: 1
+  maxReplicas: 3
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 90
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
   name: nowchess-account
 spec:
   scaleTargetRef:

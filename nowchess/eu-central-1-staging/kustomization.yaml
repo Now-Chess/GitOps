@@ -25,6 +25,13 @@ patches:
     apiVersion: autoscaling/v2
     kind: HorizontalPodAutoscaler
     metadata:
+      name: nowchess-analysis
+    spec:
+      maxReplicas: 1
+- patch: |-
+    apiVersion: autoscaling/v2
+    kind: HorizontalPodAutoscaler
+    metadata:
       name: nowchess-account
     spec:
       minReplicas: 1
@@ -87,6 +94,8 @@ patches:
     spec:
       replicas: 1
 images:
+- name: ghcr.io/now-chess/now-chess-systems/analysis
+  newTag: 0.1.0
 - name: ghcr.io/now-chess/now-chess-systems/account
   newTag: 0.24.0
 - name: ghcr.io/now-chess/now-chess-systems/bot-platform
