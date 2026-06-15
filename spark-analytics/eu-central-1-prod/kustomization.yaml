@@ -7,8 +7,8 @@ images:
   - name: ghcr.io/now-chess/now-chess-systems/analytics
     newTag: 0.1.0
 patches:
-  # Update the spark.kubernetes.container.image conf argument in each CronJob
-  # and the Deployment so executor pods pull the same pinned tag as the driver.
+  # Pin the analytics image tag in each CronJob and the Deployment.
+  # The base uses :latest; overlays pin to a released tag.
   - patch: |-
       apiVersion: batch/v1
       kind: CronJob
@@ -24,23 +24,17 @@ patches:
                     command:
                       - /opt/spark/bin/spark-submit
                       - --master
-                      - k8s://https://kubernetes.default.svc:443
-                      - --deploy-mode
-                      - client
-                      - --conf
-                      - spark.kubernetes.container.image=ghcr.io/now-chess/now-chess-systems/analytics:0.1.0
-                      - --conf
-                      - spark.kubernetes.namespace=nowchess
-                      - --conf
-                      - spark.kubernetes.authenticate.driver.serviceAccountName=spark-analytics
-                      - --conf
-                      - spark.kubernetes.executor.deleteOnTermination=true
+                      - spark://spark-master:7077
                       - --conf
                       - spark.executor.instances=2
                       - --conf
                       - spark.executor.memory=1g
                       - --conf
                       - spark.driver.memory=512m
+                      - --conf
+                      - spark.eventLog.enabled=true
+                      - --conf
+                      - spark.eventLog.dir=/spark-events
                       - --class
                       - de.nowchess.analytics.OpeningBookJob
                       - local:///app/analytics.jar
@@ -64,23 +58,17 @@ patches:
                     command:
                       - /opt/spark/bin/spark-submit
                       - --master
-                      - k8s://https://kubernetes.default.svc:443
-                      - --deploy-mode
-                      - client
-                      - --conf
-                      - spark.kubernetes.container.image=ghcr.io/now-chess/now-chess-systems/analytics:0.1.0
-                      - --conf
-                      - spark.kubernetes.namespace=nowchess
-                      - --conf
-                      - spark.kubernetes.authenticate.driver.serviceAccountName=spark-analytics
-                      - --conf
-                      - spark.kubernetes.executor.deleteOnTermination=true
+                      - spark://spark-master:7077
                       - --conf
                       - spark.executor.instances=2
                       - --conf
                       - spark.executor.memory=1g
                       - --conf
                       - spark.driver.memory=512m
+                      - --conf
+                      - spark.eventLog.enabled=true
+                      - --conf
+                      - spark.eventLog.dir=/spark-events
                       - --class
                       - de.nowchess.analytics.PlayerStatsJob
                       - local:///app/analytics.jar
@@ -103,23 +91,17 @@ patches:
                     command:
                       - /opt/spark/bin/spark-submit
                       - --master
-                      - k8s://https://kubernetes.default.svc:443
-                      - --deploy-mode
-                      - client
-                      - --conf
-                      - spark.kubernetes.container.image=ghcr.io/now-chess/now-chess-systems/analytics:0.1.0
-                      - --conf
-                      - spark.kubernetes.namespace=nowchess
-                      - --conf
-                      - spark.kubernetes.authenticate.driver.serviceAccountName=spark-analytics
-                      - --conf
-                      - spark.kubernetes.executor.deleteOnTermination=true
+                      - spark://spark-master:7077
                       - --conf
                       - spark.executor.instances=2
                       - --conf
                       - spark.executor.memory=1g
                       - --conf
                       - spark.driver.memory=512m
+                      - --conf
+                      - spark.eventLog.enabled=true
+                      - --conf
+                      - spark.eventLog.dir=/spark-events
                       - --class
                       - de.nowchess.analytics.PlayerClusteringJob
                       - local:///app/analytics.jar
@@ -143,23 +125,17 @@ patches:
                     command:
                       - /opt/spark/bin/spark-submit
                       - --master
-                      - k8s://https://kubernetes.default.svc:443
-                      - --deploy-mode
-                      - client
-                      - --conf
-                      - spark.kubernetes.container.image=ghcr.io/now-chess/now-chess-systems/analytics:0.1.0
-                      - --conf
-                      - spark.kubernetes.namespace=nowchess
-                      - --conf
-                      - spark.kubernetes.authenticate.driver.serviceAccountName=spark-analytics
-                      - --conf
-                      - spark.kubernetes.executor.deleteOnTermination=true
+                      - spark://spark-master:7077
                       - --conf
                       - spark.executor.instances=2
                       - --conf
                       - spark.executor.memory=1g
                       - --conf
                       - spark.driver.memory=512m
+                      - --conf
+                      - spark.eventLog.enabled=true
+                      - --conf
+                      - spark.eventLog.dir=/spark-events
                       - --class
                       - de.nowchess.analytics.PlayerGraphJob
                       - local:///app/analytics.jar
@@ -180,23 +156,17 @@ patches:
                 command:
                   - /opt/spark/bin/spark-submit
                   - --master
-                  - k8s://https://kubernetes.default.svc:443
-                  - --deploy-mode
-                  - client
-                  - --conf
-                  - spark.kubernetes.container.image=ghcr.io/now-chess/now-chess-systems/analytics:0.1.0
-                  - --conf
-                  - spark.kubernetes.namespace=nowchess
-                  - --conf
-                  - spark.kubernetes.authenticate.driver.serviceAccountName=spark-analytics
-                  - --conf
-                  - spark.kubernetes.executor.deleteOnTermination=true
+                  - spark://spark-master:7077
                   - --conf
                   - spark.executor.instances=1
                   - --conf
                   - spark.executor.memory=512m
                   - --conf
                   - spark.driver.memory=512m
+                  - --conf
+                  - spark.eventLog.enabled=true
+                  - --conf
+                  - spark.eventLog.dir=/spark-events
                   - --class
                   - de.nowchess.analytics.LiveDashboardJob
                   - local:///app/analytics.jar

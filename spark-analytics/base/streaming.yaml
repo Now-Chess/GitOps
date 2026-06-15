@@ -26,24 +26,17 @@ spec:
           command:
             - /opt/spark/bin/spark-submit
             - --master
-            - k8s://https://kubernetes.default.svc:443
-            - --deploy-mode
-            - client
-            - --conf
-            # spark.kubernetes.container.image must match the analytics image tag set in the overlay
-            - spark.kubernetes.container.image=ghcr.io/now-chess/now-chess-systems/analytics:latest
-            - --conf
-            - spark.kubernetes.namespace=nowchess
-            - --conf
-            - spark.kubernetes.authenticate.driver.serviceAccountName=spark-analytics
-            - --conf
-            - spark.kubernetes.executor.deleteOnTermination=true
+            - spark://spark-master:7077
             - --conf
             - spark.executor.instances=1
             - --conf
             - spark.executor.memory=512m
             - --conf
             - spark.driver.memory=512m
+            - --conf
+            - spark.eventLog.enabled=true
+            - --conf
+            - spark.eventLog.dir=/spark-events
             - --class
             - de.nowchess.analytics.LiveDashboardJob
             - local:///app/analytics.jar
@@ -74,7 +67,12 @@ spec:
           volumeMounts:
             - name: spark-checkpoint
               mountPath: /spark-checkpoint
+            - name: spark-events
+              mountPath: /spark-events
       volumes:
         - name: spark-checkpoint
           persistentVolumeClaim:
             claimName: spark-streaming-checkpoint
+        - name: spark-events
+          persistentVolumeClaim:
+            claimName: spark-events

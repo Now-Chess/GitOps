@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: spark-events
+  labels:
+    app.kubernetes.io/name: spark-cluster
+    app.kubernetes.io/part-of: nowchess
+spec:
+  # ReadWriteOnce for k3d/local-path compatibility.
+  # NOTE: k3d uses the local-path provisioner which only supports RWO.
+  # For production with multiple concurrent writers (workers + history server),
+  # replace with a RWX-capable storage class such as NFS or Longhorn and
+  # change accessModes to [ReadWriteMany].
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi

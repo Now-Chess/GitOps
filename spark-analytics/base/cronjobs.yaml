@@ -27,24 +27,17 @@ spec:
               command:
                 - /opt/spark/bin/spark-submit
                 - --master
-                - k8s://https://kubernetes.default.svc:443
-                - --deploy-mode
-                - client
-                - --conf
-                # spark.kubernetes.container.image must match the analytics image tag set in the overlay
-                - spark.kubernetes.container.image=ghcr.io/now-chess/now-chess-systems/analytics:latest
-                - --conf
-                - spark.kubernetes.namespace=nowchess
-                - --conf
-                - spark.kubernetes.authenticate.driver.serviceAccountName=spark-analytics
-                - --conf
-                - spark.kubernetes.executor.deleteOnTermination=true
+                - spark://spark-master:7077
                 - --conf
                 - spark.executor.instances=2
                 - --conf
                 - spark.executor.memory=1g
                 - --conf
                 - spark.driver.memory=512m
+                - --conf
+                - spark.eventLog.enabled=true
+                - --conf
+                - spark.eventLog.dir=/spark-events
                 - --class
                 - de.nowchess.analytics.OpeningBookJob
                 - local:///app/analytics.jar
@@ -76,10 +69,15 @@ spec:
               volumeMounts:
                 - name: spark-output
                   mountPath: /spark-output
+                - name: spark-events
+                  mountPath: /spark-events
           volumes:
             - name: spark-output
               persistentVolumeClaim:
                 claimName: spark-analytics-output
+            - name: spark-events
+              persistentVolumeClaim:
+                claimName: spark-events
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -110,24 +108,17 @@ spec:
               command:
                 - /opt/spark/bin/spark-submit
                 - --master
-                - k8s://https://kubernetes.default.svc:443
-                - --deploy-mode
-                - client
-                - --conf
-                # spark.kubernetes.container.image must match the analytics image tag set in the overlay
-                - spark.kubernetes.container.image=ghcr.io/now-chess/now-chess-systems/analytics:latest
-                - --conf
-                - spark.kubernetes.namespace=nowchess
-                - --conf
-                - spark.kubernetes.authenticate.driver.serviceAccountName=spark-analytics
-                - --conf
-                - spark.kubernetes.executor.deleteOnTermination=true
+                - spark://spark-master:7077
                 - --conf
                 - spark.executor.instances=2
                 - --conf
                 - spark.executor.memory=1g
                 - --conf
                 - spark.driver.memory=512m
+                - --conf
+                - spark.eventLog.enabled=true
+                - --conf
+                - spark.eventLog.dir=/spark-events
                 - --class
                 - de.nowchess.analytics.PlayerStatsJob
                 - local:///app/analytics.jar
@@ -158,10 +149,15 @@ spec:
               volumeMounts:
                 - name: spark-output
                   mountPath: /spark-output
+                - name: spark-events
+                  mountPath: /spark-events
           volumes:
             - name: spark-output
               persistentVolumeClaim:
                 claimName: spark-analytics-output
+            - name: spark-events
+              persistentVolumeClaim:
+                claimName: spark-events
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -192,24 +188,17 @@ spec:
               command:
                 - /opt/spark/bin/spark-submit
                 - --master
-                - k8s://https://kubernetes.default.svc:443
-                - --deploy-mode
-                - client
-                - --conf
-                # spark.kubernetes.container.image must match the analytics image tag set in the overlay
-                - spark.kubernetes.container.image=ghcr.io/now-chess/now-chess-systems/analytics:latest
-                - --conf
-                - spark.kubernetes.namespace=nowchess
-                - --conf
-                - spark.kubernetes.authenticate.driver.serviceAccountName=spark-analytics
-                - --conf
-                - spark.kubernetes.executor.deleteOnTermination=true
+                - spark://spark-master:7077
                 - --conf
                 - spark.executor.instances=2
                 - --conf
                 - spark.executor.memory=1g
                 - --conf
                 - spark.driver.memory=512m
+                - --conf
+                - spark.eventLog.enabled=true
+                - --conf
+                - spark.eventLog.dir=/spark-events
                 - --class
                 - de.nowchess.analytics.PlayerClusteringJob
                 - local:///app/analytics.jar
@@ -241,10 +230,15 @@ spec:
               volumeMounts:
                 - name: spark-output
                   mountPath: /spark-output
+                - name: spark-events
+                  mountPath: /spark-events
           volumes:
             - name: spark-output
               persistentVolumeClaim:
                 claimName: spark-analytics-output
+            - name: spark-events
+              persistentVolumeClaim:
+                claimName: spark-events
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -275,24 +269,17 @@ spec:
               command:
                 - /opt/spark/bin/spark-submit
                 - --master
-                - k8s://https://kubernetes.default.svc:443
-                - --deploy-mode
-                - client
-                - --conf
-                # spark.kubernetes.container.image must match the analytics image tag set in the overlay
-                - spark.kubernetes.container.image=ghcr.io/now-chess/now-chess-systems/analytics:latest
-                - --conf
-                - spark.kubernetes.namespace=nowchess
-                - --conf
-                - spark.kubernetes.authenticate.driver.serviceAccountName=spark-analytics
-                - --conf
-                - spark.kubernetes.executor.deleteOnTermination=true
+                - spark://spark-master:7077
                 - --conf
                 - spark.executor.instances=2
                 - --conf
                 - spark.executor.memory=1g
                 - --conf
                 - spark.driver.memory=512m
+                - --conf
+                - spark.eventLog.enabled=true
+                - --conf
+                - spark.eventLog.dir=/spark-events
                 - --class
                 - de.nowchess.analytics.PlayerGraphJob
                 - local:///app/analytics.jar
@@ -323,7 +310,12 @@ spec:
               volumeMounts:
                 - name: spark-output
                   mountPath: /spark-output
+                - name: spark-events
+                  mountPath: /spark-events
           volumes:
             - name: spark-output
               persistentVolumeClaim:
                 claimName: spark-analytics-output
+            - name: spark-events
+              persistentVolumeClaim:
+                claimName: spark-events
