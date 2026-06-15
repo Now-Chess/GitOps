@@ -121,6 +121,21 @@ spec:
 apiVersion: kargo.akuity.io/v1alpha1
 kind: Warehouse
 metadata:
+  name: tournament
+  namespace: nowchess-kargo
+spec:
+  freightCreationPolicy: Automatic
+  interval: 5m0s
+  subscriptions:
+    - image:
+        discoveryLimit: 20
+        imageSelectionStrategy: SemVer
+        repoURL: ghcr.io/now-chess/now-chess-systems/tournament
+        strictSemvers: true
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
   name: ws
   namespace: nowchess-kargo
 spec:
