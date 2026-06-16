@@ -19,6 +19,8 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          securityContext:
+            fsGroup: 185
           imagePullSecrets:
             - name: ghcr-pull-secret
           containers:
@@ -91,6 +93,8 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          securityContext:
+            fsGroup: 185
           imagePullSecrets:
             - name: ghcr-pull-secret
           containers:
@@ -162,6 +166,8 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          securityContext:
+            fsGroup: 185
           imagePullSecrets:
             - name: ghcr-pull-secret
           containers:
@@ -234,6 +240,8 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          securityContext:
+            fsGroup: 185
           imagePullSecrets:
             - name: ghcr-pull-secret
           containers:
