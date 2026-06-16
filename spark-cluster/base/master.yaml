@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: spark-master
     app.kubernetes.io/part-of: nowchess
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: spark-master
@@ -32,11 +32,11 @@ spec:
               containerPort: 8080
           resources:
             requests:
-              cpu: 200m
+              cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
-              memory: 2Gi
+              cpu: 500m
+              memory: 512Mi
           volumeMounts:
             - name: spark-events
               mountPath: /spark-events

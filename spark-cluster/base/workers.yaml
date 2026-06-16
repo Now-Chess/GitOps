@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: spark-worker
     app.kubernetes.io/part-of: nowchess
 spec:
-  replicas: 0
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: spark-worker
@@ -27,17 +27,17 @@ spec:
             - name: SPARK_WORKER_CORES
               value: "2"
             - name: SPARK_WORKER_MEMORY
-              value: "512m"
+              value: "256m"
           ports:
             - name: webui
               containerPort: 8081
           resources:
             requests:
-              cpu: 200m
+              cpu: 100m
               memory: 256Mi
             limits:
-              cpu: "1"
-              memory: 2Gi
+              cpu: 500m
+              memory: 512Mi
           volumeMounts:
             - name: spark-events
               mountPath: /spark-events
