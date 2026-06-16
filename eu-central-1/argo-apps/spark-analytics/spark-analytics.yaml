@@ -12,7 +12,4 @@ spec:
     - repoURL: git@git.janis-eccarius.de:NowChess/Gitops.git
       path: ./spark-analytics/eu-central-1-prod
       targetRevision: main
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+  syncPolicy: {}
