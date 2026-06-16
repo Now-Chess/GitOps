@@ -30,7 +30,7 @@ patches:
                       - --conf
                       - spark.executor.cores=1
                       - --conf
-                      - spark.executor.memory=200m
+                      - spark.executor.memory=512m
                       - --conf
                       - spark.driver.memory=512m
                       - --class
@@ -62,7 +62,7 @@ patches:
                       - --conf
                       - spark.executor.cores=1
                       - --conf
-                      - spark.executor.memory=200m
+                      - spark.executor.memory=512m
                       - --conf
                       - spark.driver.memory=512m
                       - --class
@@ -93,7 +93,7 @@ patches:
                       - --conf
                       - spark.executor.cores=1
                       - --conf
-                      - spark.executor.memory=200m
+                      - spark.executor.memory=512m
                       - --conf
                       - spark.driver.memory=512m
                       - --class
@@ -125,7 +125,7 @@ patches:
                       - --conf
                       - spark.executor.cores=1
                       - --conf
-                      - spark.executor.memory=200m
+                      - spark.executor.memory=512m
                       - --conf
                       - spark.driver.memory=512m
                       - --class
