@@ -25,7 +25,7 @@ spec:
             - spark://spark-master:7077
           env:
             - name: SPARK_WORKER_CORES
-              value: "4"
+              value: "2"
             - name: SPARK_WORKER_MEMORY
               value: "512m"
           ports:
