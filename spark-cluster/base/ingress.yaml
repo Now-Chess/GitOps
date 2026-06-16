@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: spark-cluster
     app.kubernetes.io/part-of: nowchess
 spec:
-  ingressClassName: traefik
+  ingressClassName: nginx
   rules:
     - host: spark.nowchess.janis-eccarius.de
       http:
@@ -27,7 +27,7 @@ metadata:
     app.kubernetes.io/name: spark-cluster
     app.kubernetes.io/part-of: nowchess
 spec:
-  ingressClassName: traefik
+  ingressClassName: nginx
   rules:
     - host: spark-history.nowchess.janis-eccarius.de
       http:
