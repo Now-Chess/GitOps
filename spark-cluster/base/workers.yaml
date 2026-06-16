@@ -27,14 +27,14 @@ spec:
             - name: SPARK_WORKER_CORES
               value: "1"
             - name: SPARK_WORKER_MEMORY
-              value: "1g"
+              value: "512m"
           ports:
             - name: webui
               containerPort: 8081
           resources:
             requests:
-              cpu: 500m
-              memory: 1Gi
+              cpu: 200m
+              memory: 256Mi
             limits:
               cpu: "1"
               memory: 2Gi
