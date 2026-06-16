@@ -53,6 +53,8 @@ spec:
             - --conf
             - spark.executor.instances=1
             - --conf
+            - spark.executor.cores=1
+            - --conf
             - spark.executor.memory=512m
             - --conf
             - spark.driver.memory=512m

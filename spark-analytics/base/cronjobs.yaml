@@ -33,6 +33,8 @@ spec:
                 - --conf
                 - spark.executor.instances=2
                 - --conf
+                - spark.executor.cores=2
+                - --conf
                 - spark.executor.memory=1g
                 - --conf
                 - spark.driver.memory=512m
@@ -107,6 +109,8 @@ spec:
                 - --conf
                 - spark.executor.instances=2
                 - --conf
+                - spark.executor.cores=2
+                - --conf
                 - spark.executor.memory=1g
                 - --conf
                 - spark.driver.memory=512m
@@ -179,6 +183,8 @@ spec:
                 - spark://spark-master:7077
                 - --conf
                 - spark.executor.instances=2
+                - --conf
+                - spark.executor.cores=2
                 - --conf
                 - spark.executor.memory=1g
                 - --conf
@@ -253,6 +259,8 @@ spec:
                 - spark://spark-master:7077
                 - --conf
                 - spark.executor.instances=2
+                - --conf
+                - spark.executor.cores=2
                 - --conf
                 - spark.executor.memory=1g
                 - --conf
