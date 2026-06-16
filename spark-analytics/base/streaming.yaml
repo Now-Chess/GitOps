@@ -1,3 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-live-dashboard-driver
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  clusterIP: None
+  selector:
+    app: spark-live-dashboard
+  ports:
+    - name: driver
+      port: 37007
+      targetPort: 37007
+    - name: blockmanager
+      port: 37777
+      targetPort: 37777
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -35,6 +54,12 @@ spec:
             - spark.executor.memory=512m
             - --conf
             - spark.driver.memory=512m
+            - --conf
+            - spark.driver.host=spark-live-dashboard-driver
+            - --conf
+            - spark.driver.port=37007
+            - --conf
+            - spark.blockManager.port=37777
             - --class
             - de.nowchess.analytics.LiveDashboardJob
             - local:///app/analytics.jar
