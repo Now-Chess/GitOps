@@ -6,7 +6,7 @@ metadata:
     app.kubernetes.io/name: spark-master
     app.kubernetes.io/part-of: nowchess
 spec:
-  replicas: 1
+  replicas: 0
   selector:
     matchLabels:
       app.kubernetes.io/name: spark-master
