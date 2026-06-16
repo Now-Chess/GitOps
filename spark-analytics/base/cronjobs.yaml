@@ -34,10 +34,6 @@ spec:
                 - spark.executor.memory=1g
                 - --conf
                 - spark.driver.memory=512m
-                - --conf
-                - spark.eventLog.enabled=true
-                - --conf
-                - spark.eventLog.dir=/spark-events
                 - --class
                 - de.nowchess.analytics.OpeningBookJob
                 - local:///app/analytics.jar
@@ -69,15 +65,10 @@ spec:
               volumeMounts:
                 - name: spark-output
                   mountPath: /spark-output
-                - name: spark-events
-                  mountPath: /spark-events
           volumes:
             - name: spark-output
               persistentVolumeClaim:
                 claimName: spark-analytics-output
-            - name: spark-events
-              persistentVolumeClaim:
-                claimName: spark-events
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -115,10 +106,6 @@ spec:
                 - spark.executor.memory=1g
                 - --conf
                 - spark.driver.memory=512m
-                - --conf
-                - spark.eventLog.enabled=true
-                - --conf
-                - spark.eventLog.dir=/spark-events
                 - --class
                 - de.nowchess.analytics.PlayerStatsJob
                 - local:///app/analytics.jar
@@ -149,15 +136,10 @@ spec:
               volumeMounts:
                 - name: spark-output
                   mountPath: /spark-output
-                - name: spark-events
-                  mountPath: /spark-events
           volumes:
             - name: spark-output
               persistentVolumeClaim:
                 claimName: spark-analytics-output
-            - name: spark-events
-              persistentVolumeClaim:
-                claimName: spark-events
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -195,10 +177,6 @@ spec:
                 - spark.executor.memory=1g
                 - --conf
                 - spark.driver.memory=512m
-                - --conf
-                - spark.eventLog.enabled=true
-                - --conf
-                - spark.eventLog.dir=/spark-events
                 - --class
                 - de.nowchess.analytics.PlayerClusteringJob
                 - local:///app/analytics.jar
@@ -230,15 +208,10 @@ spec:
               volumeMounts:
                 - name: spark-output
                   mountPath: /spark-output
-                - name: spark-events
-                  mountPath: /spark-events
           volumes:
             - name: spark-output
               persistentVolumeClaim:
                 claimName: spark-analytics-output
-            - name: spark-events
-              persistentVolumeClaim:
-                claimName: spark-events
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -276,10 +249,6 @@ spec:
                 - spark.executor.memory=1g
                 - --conf
                 - spark.driver.memory=512m
-                - --conf
-                - spark.eventLog.enabled=true
-                - --conf
-                - spark.eventLog.dir=/spark-events
                 - --class
                 - de.nowchess.analytics.PlayerGraphJob
                 - local:///app/analytics.jar
@@ -310,12 +279,7 @@ spec:
               volumeMounts:
                 - name: spark-output
                   mountPath: /spark-output
-                - name: spark-events
-                  mountPath: /spark-events
           volumes:
             - name: spark-output
               persistentVolumeClaim:
                 claimName: spark-analytics-output
-            - name: spark-events
-              persistentVolumeClaim:
-                claimName: spark-events

@@ -33,10 +33,6 @@ spec:
             - spark.executor.memory=512m
             - --conf
             - spark.driver.memory=512m
-            - --conf
-            - spark.eventLog.enabled=true
-            - --conf
-            - spark.eventLog.dir=/spark-events
             - --class
             - de.nowchess.analytics.LiveDashboardJob
             - local:///app/analytics.jar
@@ -67,12 +63,7 @@ spec:
           volumeMounts:
             - name: spark-checkpoint
               mountPath: /spark-checkpoint
-            - name: spark-events
-              mountPath: /spark-events
       volumes:
         - name: spark-checkpoint
           persistentVolumeClaim:
             claimName: spark-streaming-checkpoint
-        - name: spark-events
-          persistentVolumeClaim:
-            claimName: spark-events

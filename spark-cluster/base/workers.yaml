@@ -43,5 +43,4 @@ spec:
               mountPath: /spark-events
       volumes:
         - name: spark-events
-          persistentVolumeClaim:
-            claimName: spark-events
+          emptyDir: {}
