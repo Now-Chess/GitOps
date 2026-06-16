@@ -57,8 +57,8 @@ spec:
                   key: STORE_DB_PASSWORD
           resources:
             requests:
-              cpu: 500m
-              memory: 768Mi
+              cpu: 100m
+              memory: 256Mi
             limits:
               cpu: "1"
               memory: 1Gi
