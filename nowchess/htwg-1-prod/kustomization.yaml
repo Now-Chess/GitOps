@@ -40,7 +40,7 @@ images:
 - name: ghcr.io/now-chess/now-chess-systems/coordinator
   newTag: 0.32.0-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/core
-  newTag: 0.50.0-x86_v2
+  newTag: 0.51.0-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/frontend
   newTag: 0.3.0-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/io
