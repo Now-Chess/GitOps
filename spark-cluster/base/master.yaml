@@ -16,6 +16,9 @@ spec:
         app.kubernetes.io/name: spark-master
         app.kubernetes.io/part-of: nowchess
     spec:
+      # Prevent K8s from injecting SPARK_MASTER_PORT=tcp://... env vars (Docker-link
+      # style). Spark master parses SPARK_MASTER_PORT as an integer and crashes.
+      enableServiceLinks: false
       containers:
         - name: spark-master
           image: apache/spark:4.0.3-scala2.13-java17-ubuntu
