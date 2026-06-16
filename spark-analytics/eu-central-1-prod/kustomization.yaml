@@ -33,6 +33,12 @@ patches:
                       - spark.executor.memory=512m
                       - --conf
                       - spark.driver.memory=512m
+                      - --conf
+                      - spark.driver.host=spark-opening-book-driver
+                      - --conf
+                      - spark.driver.port=44167
+                      - --conf
+                      - spark.blockManager.port=44777
                       - --class
                       - de.nowchess.analytics.OpeningBookJob
                       - local:///app/analytics.jar
@@ -65,6 +71,12 @@ patches:
                       - spark.executor.memory=512m
                       - --conf
                       - spark.driver.memory=512m
+                      - --conf
+                      - spark.driver.host=spark-player-stats-driver
+                      - --conf
+                      - spark.driver.port=44167
+                      - --conf
+                      - spark.blockManager.port=44777
                       - --class
                       - de.nowchess.analytics.PlayerStatsJob
                       - local:///app/analytics.jar
@@ -96,6 +108,12 @@ patches:
                       - spark.executor.memory=512m
                       - --conf
                       - spark.driver.memory=512m
+                      - --conf
+                      - spark.driver.host=spark-player-clustering-driver
+                      - --conf
+                      - spark.driver.port=44167
+                      - --conf
+                      - spark.blockManager.port=44777
                       - --class
                       - de.nowchess.analytics.PlayerClusteringJob
                       - local:///app/analytics.jar
@@ -128,6 +146,12 @@ patches:
                       - spark.executor.memory=512m
                       - --conf
                       - spark.driver.memory=512m
+                      - --conf
+                      - spark.driver.host=spark-player-graph-driver
+                      - --conf
+                      - spark.driver.port=44167
+                      - --conf
+                      - spark.blockManager.port=44777
                       - --class
                       - de.nowchess.analytics.PlayerGraphJob
                       - local:///app/analytics.jar
@@ -152,9 +176,17 @@ patches:
                   - --conf
                   - spark.executor.instances=1
                   - --conf
+                  - spark.executor.cores=1
+                  - --conf
                   - spark.executor.memory=512m
                   - --conf
                   - spark.driver.memory=512m
+                  - --conf
+                  - spark.driver.host=spark-live-dashboard-driver
+                  - --conf
+                  - spark.driver.port=37007
+                  - --conf
+                  - spark.blockManager.port=37777
                   - --class
                   - de.nowchess.analytics.LiveDashboardJob
                   - local:///app/analytics.jar

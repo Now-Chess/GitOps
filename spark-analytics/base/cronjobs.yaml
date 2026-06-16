@@ -1,3 +1,79 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-opening-book-driver
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  clusterIP: None
+  selector:
+    app: spark-opening-book
+  ports:
+    - name: driver
+      port: 44167
+      targetPort: 44167
+    - name: blockmanager
+      port: 44777
+      targetPort: 44777
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-player-stats-driver
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  clusterIP: None
+  selector:
+    app: spark-player-stats
+  ports:
+    - name: driver
+      port: 44167
+      targetPort: 44167
+    - name: blockmanager
+      port: 44777
+      targetPort: 44777
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-player-clustering-driver
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  clusterIP: None
+  selector:
+    app: spark-player-clustering
+  ports:
+    - name: driver
+      port: 44167
+      targetPort: 44167
+    - name: blockmanager
+      port: 44777
+      targetPort: 44777
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-player-graph-driver
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  clusterIP: None
+  selector:
+    app: spark-player-graph
+  ports:
+    - name: driver
+      port: 44167
+      targetPort: 44167
+    - name: blockmanager
+      port: 44777
+      targetPort: 44777
+---
 apiVersion: batch/v1
 kind: CronJob
 metadata:
@@ -15,6 +91,7 @@ spec:
       template:
         metadata:
           labels:
+            app: spark-opening-book
             app.kubernetes.io/name: spark-analytics
             app.kubernetes.io/part-of: nowchess
         spec:
@@ -32,13 +109,19 @@ spec:
                 - --master
                 - spark://spark-master:7077
                 - --conf
-                - spark.executor.instances=2
+                - spark.executor.instances=1
                 - --conf
-                - spark.executor.cores=2
+                - spark.executor.cores=1
                 - --conf
                 - spark.executor.memory=512m
                 - --conf
                 - spark.driver.memory=512m
+                - --conf
+                - spark.driver.host=spark-opening-book-driver
+                - --conf
+                - spark.driver.port=44167
+                - --conf
+                - spark.blockManager.port=44777
                 - --class
                 - de.nowchess.analytics.OpeningBookJob
                 - local:///app/analytics.jar
@@ -92,6 +175,7 @@ spec:
       template:
         metadata:
           labels:
+            app: spark-player-stats
             app.kubernetes.io/name: spark-analytics
             app.kubernetes.io/part-of: nowchess
         spec:
@@ -109,13 +193,19 @@ spec:
                 - --master
                 - spark://spark-master:7077
                 - --conf
-                - spark.executor.instances=2
+                - spark.executor.instances=1
                 - --conf
-                - spark.executor.cores=2
+                - spark.executor.cores=1
                 - --conf
                 - spark.executor.memory=512m
                 - --conf
                 - spark.driver.memory=512m
+                - --conf
+                - spark.driver.host=spark-player-stats-driver
+                - --conf
+                - spark.driver.port=44167
+                - --conf
+                - spark.blockManager.port=44777
                 - --class
                 - de.nowchess.analytics.PlayerStatsJob
                 - local:///app/analytics.jar
@@ -168,6 +258,7 @@ spec:
       template:
         metadata:
           labels:
+            app: spark-player-clustering
             app.kubernetes.io/name: spark-analytics
             app.kubernetes.io/part-of: nowchess
         spec:
@@ -185,13 +276,19 @@ spec:
                 - --master
                 - spark://spark-master:7077
                 - --conf
-                - spark.executor.instances=2
+                - spark.executor.instances=1
                 - --conf
-                - spark.executor.cores=2
+                - spark.executor.cores=1
                 - --conf
                 - spark.executor.memory=512m
                 - --conf
                 - spark.driver.memory=512m
+                - --conf
+                - spark.driver.host=spark-player-clustering-driver
+                - --conf
+                - spark.driver.port=44167
+                - --conf
+                - spark.blockManager.port=44777
                 - --class
                 - de.nowchess.analytics.PlayerClusteringJob
                 - local:///app/analytics.jar
@@ -245,6 +342,7 @@ spec:
       template:
         metadata:
           labels:
+            app: spark-player-graph
             app.kubernetes.io/name: spark-analytics
             app.kubernetes.io/part-of: nowchess
         spec:
@@ -262,13 +360,19 @@ spec:
                 - --master
                 - spark://spark-master:7077
                 - --conf
-                - spark.executor.instances=2
+                - spark.executor.instances=1
                 - --conf
-                - spark.executor.cores=2
+                - spark.executor.cores=1
                 - --conf
                 - spark.executor.memory=512m
                 - --conf
                 - spark.driver.memory=512m
+                - --conf
+                - spark.driver.host=spark-player-graph-driver
+                - --conf
+                - spark.driver.port=44167
+                - --conf
+                - spark.blockManager.port=44777
                 - --class
                 - de.nowchess.analytics.PlayerGraphJob
                 - local:///app/analytics.jar
