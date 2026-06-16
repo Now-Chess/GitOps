@@ -5,7 +5,7 @@ resources:
   - ../base
 images:
   - name: ghcr.io/now-chess/now-chess-systems/analytics
-    newTag: 0.1.0
+    newTag: 0.2.0
 patches:
   # Pin the analytics image tag in each CronJob and the Deployment.
   # The base uses :latest; overlays pin to a released tag.
