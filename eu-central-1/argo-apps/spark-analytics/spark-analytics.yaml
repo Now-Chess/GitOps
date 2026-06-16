@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spark-analytics
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: nowchess
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: git@git.janis-eccarius.de:NowChess/Gitops.git
+      path: ./spark-analytics/eu-central-1-prod
+      targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

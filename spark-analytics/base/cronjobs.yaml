@@ -1,0 +1,321 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: spark-opening-book
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  schedule: "0 2 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: spark-analytics
+            app.kubernetes.io/part-of: nowchess
+        spec:
+          serviceAccountName: spark-analytics
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: ghcr-pull-secret
+          containers:
+            - name: spark-driver
+              image: ghcr.io/now-chess/now-chess-systems/analytics:latest
+              command:
+                - /opt/spark/bin/spark-submit
+                - --master
+                - spark://spark-master:7077
+                - --conf
+                - spark.executor.instances=2
+                - --conf
+                - spark.executor.memory=1g
+                - --conf
+                - spark.driver.memory=512m
+                - --conf
+                - spark.eventLog.enabled=true
+                - --conf
+                - spark.eventLog.dir=/spark-events
+                - --class
+                - de.nowchess.analytics.OpeningBookJob
+                - local:///app/analytics.jar
+                - /spark-output/opening-book
+                - "10"
+              env:
+                - name: NOWCHESS_JDBC_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_URL
+                - name: NOWCHESS_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_USER
+                - name: NOWCHESS_DB_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_PASSWORD
+              resources:
+                requests:
+                  cpu: 500m
+                  memory: 768Mi
+                limits:
+                  cpu: "1"
+                  memory: 1Gi
+              volumeMounts:
+                - name: spark-output
+                  mountPath: /spark-output
+                - name: spark-events
+                  mountPath: /spark-events
+          volumes:
+            - name: spark-output
+              persistentVolumeClaim:
+                claimName: spark-analytics-output
+            - name: spark-events
+              persistentVolumeClaim:
+                claimName: spark-events
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: spark-player-stats
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  schedule: "0 3 * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: spark-analytics
+            app.kubernetes.io/part-of: nowchess
+        spec:
+          serviceAccountName: spark-analytics
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: ghcr-pull-secret
+          containers:
+            - name: spark-driver
+              image: ghcr.io/now-chess/now-chess-systems/analytics:latest
+              command:
+                - /opt/spark/bin/spark-submit
+                - --master
+                - spark://spark-master:7077
+                - --conf
+                - spark.executor.instances=2
+                - --conf
+                - spark.executor.memory=1g
+                - --conf
+                - spark.driver.memory=512m
+                - --conf
+                - spark.eventLog.enabled=true
+                - --conf
+                - spark.eventLog.dir=/spark-events
+                - --class
+                - de.nowchess.analytics.PlayerStatsJob
+                - local:///app/analytics.jar
+                - /spark-output/player-stats
+              env:
+                - name: NOWCHESS_JDBC_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_URL
+                - name: NOWCHESS_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_USER
+                - name: NOWCHESS_DB_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_PASSWORD
+              resources:
+                requests:
+                  cpu: 500m
+                  memory: 768Mi
+                limits:
+                  cpu: "1"
+                  memory: 1Gi
+              volumeMounts:
+                - name: spark-output
+                  mountPath: /spark-output
+                - name: spark-events
+                  mountPath: /spark-events
+          volumes:
+            - name: spark-output
+              persistentVolumeClaim:
+                claimName: spark-analytics-output
+            - name: spark-events
+              persistentVolumeClaim:
+                claimName: spark-events
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: spark-player-clustering
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  schedule: "0 4 * * 0"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: spark-analytics
+            app.kubernetes.io/part-of: nowchess
+        spec:
+          serviceAccountName: spark-analytics
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: ghcr-pull-secret
+          containers:
+            - name: spark-driver
+              image: ghcr.io/now-chess/now-chess-systems/analytics:latest
+              command:
+                - /opt/spark/bin/spark-submit
+                - --master
+                - spark://spark-master:7077
+                - --conf
+                - spark.executor.instances=2
+                - --conf
+                - spark.executor.memory=1g
+                - --conf
+                - spark.driver.memory=512m
+                - --conf
+                - spark.eventLog.enabled=true
+                - --conf
+                - spark.eventLog.dir=/spark-events
+                - --class
+                - de.nowchess.analytics.PlayerClusteringJob
+                - local:///app/analytics.jar
+                - /spark-output/player-clusters
+                - "4"
+              env:
+                - name: NOWCHESS_JDBC_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_URL
+                - name: NOWCHESS_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_USER
+                - name: NOWCHESS_DB_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_PASSWORD
+              resources:
+                requests:
+                  cpu: 500m
+                  memory: 768Mi
+                limits:
+                  cpu: "1"
+                  memory: 1Gi
+              volumeMounts:
+                - name: spark-output
+                  mountPath: /spark-output
+                - name: spark-events
+                  mountPath: /spark-events
+          volumes:
+            - name: spark-output
+              persistentVolumeClaim:
+                claimName: spark-analytics-output
+            - name: spark-events
+              persistentVolumeClaim:
+                claimName: spark-events
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: spark-player-graph
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  schedule: "0 5 * * 0"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: spark-analytics
+            app.kubernetes.io/part-of: nowchess
+        spec:
+          serviceAccountName: spark-analytics
+          restartPolicy: OnFailure
+          imagePullSecrets:
+            - name: ghcr-pull-secret
+          containers:
+            - name: spark-driver
+              image: ghcr.io/now-chess/now-chess-systems/analytics:latest
+              command:
+                - /opt/spark/bin/spark-submit
+                - --master
+                - spark://spark-master:7077
+                - --conf
+                - spark.executor.instances=2
+                - --conf
+                - spark.executor.memory=1g
+                - --conf
+                - spark.driver.memory=512m
+                - --conf
+                - spark.eventLog.enabled=true
+                - --conf
+                - spark.eventLog.dir=/spark-events
+                - --class
+                - de.nowchess.analytics.PlayerGraphJob
+                - local:///app/analytics.jar
+                - /spark-output/player-graph
+              env:
+                - name: NOWCHESS_JDBC_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_URL
+                - name: NOWCHESS_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_USER
+                - name: NOWCHESS_DB_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_PASSWORD
+              resources:
+                requests:
+                  cpu: 500m
+                  memory: 768Mi
+                limits:
+                  cpu: "1"
+                  memory: 1Gi
+              volumeMounts:
+                - name: spark-output
+                  mountPath: /spark-output
+                - name: spark-events
+                  mountPath: /spark-events
+          volumes:
+            - name: spark-output
+              persistentVolumeClaim:
+                claimName: spark-analytics-output
+            - name: spark-events
+              persistentVolumeClaim:
+                claimName: spark-events

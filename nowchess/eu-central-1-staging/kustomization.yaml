@@ -94,6 +94,8 @@ patches:
     spec:
       replicas: 1
 images:
+- name: ghcr.io/now-chess/now-chess-systems/analysis
+  newTag: 0.1.0
 - name: ghcr.io/now-chess/now-chess-systems/account
   newTag: 0.24.0
 - name: ghcr.io/now-chess/now-chess-systems/analysis

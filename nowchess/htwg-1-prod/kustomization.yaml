@@ -31,6 +31,8 @@ patches:
     kind: ConfigMap
     name: nowchess-frontend-env-config
 images:
+- name: ghcr.io/now-chess/now-chess-systems/analysis
+  newTag: 0.1.0-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/account
   newTag: 0.24.0-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/analysis

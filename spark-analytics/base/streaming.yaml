@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-live-dashboard
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spark-live-dashboard
+  template:
+    metadata:
+      labels:
+        app: spark-live-dashboard
+        app.kubernetes.io/name: spark-analytics
+        app.kubernetes.io/part-of: nowchess
+    spec:
+      serviceAccountName: spark-analytics
+      imagePullSecrets:
+        - name: ghcr-pull-secret
+      containers:
+        - name: spark-driver
+          image: ghcr.io/now-chess/now-chess-systems/analytics:latest
+          command:
+            - /opt/spark/bin/spark-submit
+            - --master
+            - spark://spark-master:7077
+            - --conf
+            - spark.executor.instances=1
+            - --conf
+            - spark.executor.memory=512m
+            - --conf
+            - spark.driver.memory=512m
+            - --conf
+            - spark.eventLog.enabled=true
+            - --conf
+            - spark.eventLog.dir=/spark-events
+            - --class
+            - de.nowchess.analytics.LiveDashboardJob
+            - local:///app/analytics.jar
+            - /spark-checkpoint
+          env:
+            - name: NOWCHESS_JDBC_URL
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-db-secrets
+                  key: STORE_DB_URL
+            - name: NOWCHESS_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-db-secrets
+                  key: STORE_DB_USER
+            - name: NOWCHESS_DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: ncs-db-secrets
+                  key: STORE_DB_PASSWORD
+          resources:
+            requests:
+              cpu: 500m
+              memory: 768Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          volumeMounts:
+            - name: spark-checkpoint
+              mountPath: /spark-checkpoint
+            - name: spark-events
+              mountPath: /spark-events
+      volumes:
+        - name: spark-checkpoint
+          persistentVolumeClaim:
+            claimName: spark-streaming-checkpoint
+        - name: spark-events
+          persistentVolumeClaim:
+            claimName: spark-events

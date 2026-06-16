@@ -1,0 +1,46 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: spark-master-ingress
+  labels:
+    app.kubernetes.io/name: spark-cluster
+    app.kubernetes.io/part-of: nowchess
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: spark.nowchess.janis-eccarius.de
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: spark-master-svc
+                port:
+                  number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: spark-history-ingress
+  labels:
+    app.kubernetes.io/name: spark-cluster
+    app.kubernetes.io/part-of: nowchess
+  annotations:
+    # NOTE: The Bitnami spark chart 9.2.10 does not include a standalone history
+    # server deployment or service. This Ingress is a placeholder. To activate
+    # history server access, deploy a separate spark-history-server Deployment
+    # and Service named spark-history-server-svc on port 18080.
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: spark-history.nowchess.janis-eccarius.de
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: spark-history-server-svc
+                port:
+                  number: 18080

@@ -1,0 +1,176 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: nowchess
+resources:
+  - ../base
+images:
+  - name: ghcr.io/now-chess/now-chess-systems/analytics
+    newTag: 0.1.0
+patches:
+  # Pin the analytics image tag in each CronJob and the Deployment.
+  # The base uses :latest; overlays pin to a released tag.
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-opening-book
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    command:
+                      - /opt/spark/bin/spark-submit
+                      - --master
+                      - spark://spark-master:7077
+                      - --conf
+                      - spark.executor.instances=2
+                      - --conf
+                      - spark.executor.memory=1g
+                      - --conf
+                      - spark.driver.memory=512m
+                      - --conf
+                      - spark.eventLog.enabled=true
+                      - --conf
+                      - spark.eventLog.dir=/spark-events
+                      - --class
+                      - de.nowchess.analytics.OpeningBookJob
+                      - local:///app/analytics.jar
+                      - /spark-output/opening-book
+                      - "10"
+    target:
+      kind: CronJob
+      name: spark-opening-book
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-player-stats
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    command:
+                      - /opt/spark/bin/spark-submit
+                      - --master
+                      - spark://spark-master:7077
+                      - --conf
+                      - spark.executor.instances=2
+                      - --conf
+                      - spark.executor.memory=1g
+                      - --conf
+                      - spark.driver.memory=512m
+                      - --conf
+                      - spark.eventLog.enabled=true
+                      - --conf
+                      - spark.eventLog.dir=/spark-events
+                      - --class
+                      - de.nowchess.analytics.PlayerStatsJob
+                      - local:///app/analytics.jar
+                      - /spark-output/player-stats
+    target:
+      kind: CronJob
+      name: spark-player-stats
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-player-clustering
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    command:
+                      - /opt/spark/bin/spark-submit
+                      - --master
+                      - spark://spark-master:7077
+                      - --conf
+                      - spark.executor.instances=2
+                      - --conf
+                      - spark.executor.memory=1g
+                      - --conf
+                      - spark.driver.memory=512m
+                      - --conf
+                      - spark.eventLog.enabled=true
+                      - --conf
+                      - spark.eventLog.dir=/spark-events
+                      - --class
+                      - de.nowchess.analytics.PlayerClusteringJob
+                      - local:///app/analytics.jar
+                      - /spark-output/player-clusters
+                      - "4"
+    target:
+      kind: CronJob
+      name: spark-player-clustering
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-player-graph
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    command:
+                      - /opt/spark/bin/spark-submit
+                      - --master
+                      - spark://spark-master:7077
+                      - --conf
+                      - spark.executor.instances=2
+                      - --conf
+                      - spark.executor.memory=1g
+                      - --conf
+                      - spark.driver.memory=512m
+                      - --conf
+                      - spark.eventLog.enabled=true
+                      - --conf
+                      - spark.eventLog.dir=/spark-events
+                      - --class
+                      - de.nowchess.analytics.PlayerGraphJob
+                      - local:///app/analytics.jar
+                      - /spark-output/player-graph
+    target:
+      kind: CronJob
+      name: spark-player-graph
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: spark-live-dashboard
+      spec:
+        template:
+          spec:
+            containers:
+              - name: spark-driver
+                command:
+                  - /opt/spark/bin/spark-submit
+                  - --master
+                  - spark://spark-master:7077
+                  - --conf
+                  - spark.executor.instances=1
+                  - --conf
+                  - spark.executor.memory=512m
+                  - --conf
+                  - spark.driver.memory=512m
+                  - --conf
+                  - spark.eventLog.enabled=true
+                  - --conf
+                  - spark.eventLog.dir=/spark-events
+                  - --class
+                  - de.nowchess.analytics.LiveDashboardJob
+                  - local:///app/analytics.jar
+                  - /spark-checkpoint
+    target:
+      kind: Deployment
+      name: spark-live-dashboard

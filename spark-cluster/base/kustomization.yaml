@@ -1,0 +1,60 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - pvc.yaml
+  - history-server.yaml
+  - ingress.yaml
+
+helmCharts:
+  - name: spark
+    repo: https://charts.bitnami.com/bitnami
+    version: "9.2.10"
+    releaseName: spark
+    namespace: nowchess
+    valuesInline:
+      master:
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: "1"
+            memory: 2Gi
+        extraVolumes:
+          - name: spark-events
+            persistentVolumeClaim:
+              claimName: spark-events
+        extraVolumeMounts:
+          - name: spark-events
+            mountPath: /spark-events
+      worker:
+        replicaCount: 2
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: "1"
+            memory: 2Gi
+        extraVolumes:
+          - name: spark-events
+            persistentVolumeClaim:
+              claimName: spark-events
+        extraVolumeMounts:
+          - name: spark-events
+            mountPath: /spark-events
+      historyServer:
+        enabled: true
+        eventsDir: /spark-events
+        extraVolumes:
+          - name: spark-events
+            persistentVolumeClaim:
+              claimName: spark-events
+        extraVolumeMounts:
+          - name: spark-events
+            mountPath: /spark-events
+      ingress:
+        enabled: false
+      service:
+        type: ClusterIP
