@@ -32,7 +32,7 @@ patches:
                       - --conf
                       - spark.executor.memory=200m
                       - --conf
-                      - spark.driver.memory=256m
+                      - spark.driver.memory=512m
                       - --class
                       - de.nowchess.analytics.OpeningBookJob
                       - local:///app/analytics.jar
@@ -64,7 +64,7 @@ patches:
                       - --conf
                       - spark.executor.memory=200m
                       - --conf
-                      - spark.driver.memory=256m
+                      - spark.driver.memory=512m
                       - --class
                       - de.nowchess.analytics.PlayerStatsJob
                       - local:///app/analytics.jar
@@ -95,7 +95,7 @@ patches:
                       - --conf
                       - spark.executor.memory=200m
                       - --conf
-                      - spark.driver.memory=256m
+                      - spark.driver.memory=512m
                       - --class
                       - de.nowchess.analytics.PlayerClusteringJob
                       - local:///app/analytics.jar
@@ -127,7 +127,7 @@ patches:
                       - --conf
                       - spark.executor.memory=200m
                       - --conf
-                      - spark.driver.memory=256m
+                      - spark.driver.memory=512m
                       - --class
                       - de.nowchess.analytics.PlayerGraphJob
                       - local:///app/analytics.jar
