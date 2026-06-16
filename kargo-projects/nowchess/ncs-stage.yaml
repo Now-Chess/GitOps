@@ -70,6 +70,12 @@ spec:
         requiredSoakTime: 5m0s
     - origin:
         kind: Warehouse
+        name: tournament
+      sources:
+        direct: true
+        requiredSoakTime: 5m0s
+    - origin:
+        kind: Warehouse
         name: ws
       sources:
         direct: true
@@ -170,6 +176,13 @@ spec:
           - staging
     - origin:
         kind: Warehouse
+        name: tournament
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
         name: ws
       sources:
         direct: false
@@ -263,6 +276,13 @@ spec:
     - origin:
         kind: Warehouse
         name: store
+      sources:
+        direct: false
+        stages:
+          - staging
+    - origin:
+        kind: Warehouse
+        name: tournament
       sources:
         direct: false
         stages:
