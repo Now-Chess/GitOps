@@ -94,12 +94,10 @@ patches:
     spec:
       replicas: 1
 images:
-- name: ghcr.io/now-chess/now-chess-systems/analysis
-  newTag: 0.1.0
 - name: ghcr.io/now-chess/now-chess-systems/account
   newTag: 0.24.0
 - name: ghcr.io/now-chess/now-chess-systems/analysis
-  newTag: 0.2.0
+  newTag: 0.1.0
 - name: ghcr.io/now-chess/now-chess-systems/bot-platform
   newTag: 0.12.0
 - name: ghcr.io/now-chess/now-chess-systems/coordinator
@@ -117,7 +115,7 @@ images:
 - name: ghcr.io/now-chess/now-chess-systems/store
   newTag: 0.24.0
 - name: ghcr.io/now-chess/now-chess-systems/tournament
-  newTag: 0.2.0
+  newTag: 0.3.0
 - name: ghcr.io/now-chess/now-chess-systems/ws
   newTag: 0.16.0
 configurations:
