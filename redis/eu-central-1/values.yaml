@@ -19,3 +19,8 @@ master:
 
   persistence:
     enabled: false
+
+commonConfiguration: |-
+  appendonly yes
+  save ""
+  aof-load-corrupt-tail-max-size 88
