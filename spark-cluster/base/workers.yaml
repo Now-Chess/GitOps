@@ -27,7 +27,7 @@ spec:
             - name: SPARK_WORKER_CORES
               value: "2"
             - name: SPARK_WORKER_MEMORY
-              value: "256m"
+              value: "512m"
           ports:
             - name: webui
               containerPort: 8081
@@ -37,7 +37,7 @@ spec:
               memory: 256Mi
             limits:
               cpu: 500m
-              memory: 512Mi
+              memory: 1Gi
           volumeMounts:
             - name: spark-events
               mountPath: /spark-events
