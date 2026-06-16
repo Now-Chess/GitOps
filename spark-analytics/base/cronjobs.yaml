@@ -124,7 +124,7 @@ spec:
                 - spark.blockManager.port=44777
                 - --class
                 - de.nowchess.analytics.OpeningBookJob
-                - local:///app/analytics.jar
+                - file:///app/analytics.jar
                 - /spark-output/opening-book
                 - "10"
               env:
@@ -208,7 +208,7 @@ spec:
                 - spark.blockManager.port=44777
                 - --class
                 - de.nowchess.analytics.PlayerStatsJob
-                - local:///app/analytics.jar
+                - file:///app/analytics.jar
                 - /spark-output/player-stats
               env:
                 - name: NOWCHESS_JDBC_URL
@@ -291,7 +291,7 @@ spec:
                 - spark.blockManager.port=44777
                 - --class
                 - de.nowchess.analytics.PlayerClusteringJob
-                - local:///app/analytics.jar
+                - file:///app/analytics.jar
                 - /spark-output/player-clusters
                 - "4"
               env:
@@ -375,7 +375,7 @@ spec:
                 - spark.blockManager.port=44777
                 - --class
                 - de.nowchess.analytics.PlayerGraphJob
-                - local:///app/analytics.jar
+                - file:///app/analytics.jar
                 - /spark-output/player-graph
               env:
                 - name: NOWCHESS_JDBC_URL

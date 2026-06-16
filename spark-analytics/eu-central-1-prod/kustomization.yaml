@@ -41,7 +41,7 @@ patches:
                       - spark.blockManager.port=44777
                       - --class
                       - de.nowchess.analytics.OpeningBookJob
-                      - local:///app/analytics.jar
+                      - file:///app/analytics.jar
                       - /spark-output/opening-book
                       - "10"
     target:
@@ -79,7 +79,7 @@ patches:
                       - spark.blockManager.port=44777
                       - --class
                       - de.nowchess.analytics.PlayerStatsJob
-                      - local:///app/analytics.jar
+                      - file:///app/analytics.jar
                       - /spark-output/player-stats
     target:
       kind: CronJob
@@ -116,7 +116,7 @@ patches:
                       - spark.blockManager.port=44777
                       - --class
                       - de.nowchess.analytics.PlayerClusteringJob
-                      - local:///app/analytics.jar
+                      - file:///app/analytics.jar
                       - /spark-output/player-clusters
                       - "4"
     target:
@@ -154,7 +154,7 @@ patches:
                       - spark.blockManager.port=44777
                       - --class
                       - de.nowchess.analytics.PlayerGraphJob
-                      - local:///app/analytics.jar
+                      - file:///app/analytics.jar
                       - /spark-output/player-graph
     target:
       kind: CronJob
