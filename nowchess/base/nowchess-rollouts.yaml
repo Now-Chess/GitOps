@@ -441,8 +441,10 @@ spec:
                   key: INTERNAL_SECRET
             - name: ACCOUNT_SERVICE_URL
               value: http://nowchess-account:8083
-            - name: JWT_PUBLIC_KEY_PATH
+            - name: MP_JWT_VERIFY_PUBLICKEY_LOCATION
               value: /secrets/jwt/public.pem
+            - name: MP_JWT_VERIFY_ISSUER
+              value: nowchess
           volumeMounts:
             - name: jwt-keys
               mountPath: /secrets/jwt
