@@ -441,6 +441,12 @@ spec:
                   key: INTERNAL_SECRET
             - name: ACCOUNT_SERVICE_URL
               value: http://nowchess-account:8083
+            - name: JWT_PUBLIC_KEY_PATH
+              value: /secrets/jwt/public.pem
+          volumeMounts:
+            - name: jwt-keys
+              mountPath: /secrets/jwt
+              readOnly: true
           ports:
             - containerPort: 8088
               protocol: TCP
@@ -463,6 +469,10 @@ spec:
             limits:
               cpu: "500m"
               memory: "256Mi"
+      volumes:
+        - name: jwt-keys
+          secret:
+            secretName: ncs-jwt-keys
   rollbackWindow:
     revisions: 3
   strategy:
