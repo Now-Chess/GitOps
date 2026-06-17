@@ -93,6 +93,21 @@ patches:
       name: nowchess-core
     spec:
       replicas: 1
+- patch: |-
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    metadata:
+      name: nowchess-official-bots
+    spec:
+      template:
+        spec:
+          containers:
+            - name: nowchess-official-bots
+              env:
+                - name: QUARKUS_LOG_CATEGORY__IO_SMALLRYE_JWT__LEVEL
+                  value: DEBUG
+                - name: QUARKUS_LOG_CATEGORY__IO_QUARKUS_SECURITY__LEVEL
+                  value: DEBUG
 images:
 - name: ghcr.io/now-chess/now-chess-systems/account
   newTag: 0.25.0
