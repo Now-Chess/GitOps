@@ -30,6 +30,27 @@ patches:
   target:
     kind: ConfigMap
     name: nowchess-frontend-env-config
+- patch: |-
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    metadata:
+      name: nowchess-official-bots
+    spec:
+      template:
+        spec:
+          containers:
+            - name: nowchess-official-bots
+              env:
+                - name: TOURNAMENT_SERVER_URL
+                  value: http://141.37.123.132:8086
+                - name: TOURNAMENT_BOT_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-tournament-bot-secret
+                      key: TOURNAMENT_BOT_TOKEN
+  target:
+    kind: Rollout
+    name: nowchess-official-bots
 images:
 - name: ghcr.io/now-chess/now-chess-systems/account
   newTag: 0.25.0-x86_v2
