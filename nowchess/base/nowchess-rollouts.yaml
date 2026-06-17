@@ -444,7 +444,7 @@ spec:
             - name: TOURNAMENT_SERVER_URL
               value: "http://141.37.123.132:8086"
             - name: TOURNAMENT_BOT_DIFFICULTY
-              value: "medium"
+              value: "hard"
             - name: TOURNAMENT_BOT_TOKEN
               valueFrom:
                 secretKeyRef:
