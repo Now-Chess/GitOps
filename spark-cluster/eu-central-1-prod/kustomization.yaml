@@ -3,3 +3,24 @@ kind: Kustomization
 namespace: nowchess
 resources:
   - ../base
+patches:
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: spark-master
+      spec:
+        replicas: 0
+    target:
+      kind: Deployment
+      name: spark-master
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: spark-worker
+      spec:
+        replicas: 0
+    target:
+      kind: Deployment
+      name: spark-worker

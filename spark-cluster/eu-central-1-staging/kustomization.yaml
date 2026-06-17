@@ -1,0 +1,62 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: nowchess-staging
+resources:
+  - ../base
+patches:
+  - patch: |-
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: spark-master-ingress
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-prod"
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      spec:
+        rules:
+          - host: spark-st.nowchess.janis-eccarius.de
+            http:
+              paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: spark-master
+                      port:
+                        number: 8080
+        tls:
+          - hosts:
+              - spark-st.nowchess.janis-eccarius.de
+            secretName: spark-cluster-staging-cert
+    target:
+      kind: Ingress
+      name: spark-master-ingress
+  - patch: |-
+      apiVersion: networking.k8s.io/v1
+      kind: Ingress
+      metadata:
+        name: spark-history-ingress
+        annotations:
+          cert-manager.io/cluster-issuer: "letsencrypt-prod"
+          nginx.ingress.kubernetes.io/ssl-redirect: "true"
+          nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+      spec:
+        rules:
+          - host: spark-history-st.nowchess.janis-eccarius.de
+            http:
+              paths:
+                - path: /
+                  pathType: Prefix
+                  backend:
+                    service:
+                      name: spark-history-server-svc
+                      port:
+                        number: 18080
+        tls:
+          - hosts:
+              - spark-history-st.nowchess.janis-eccarius.de
+            secretName: spark-history-staging-cert
+    target:
+      kind: Ingress
+      name: spark-history-ingress

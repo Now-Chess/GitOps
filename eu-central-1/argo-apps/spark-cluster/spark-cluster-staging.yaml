@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: spark-cluster-staging
+  namespace: argocd
+spec:
+  project: default
+  destination:
+    namespace: nowchess-staging
+    server: https://kubernetes.default.svc
+  sources:
+    - repoURL: git@git.janis-eccarius.de:NowChess/Gitops.git
+      path: ./spark-cluster/eu-central-1-staging
+      targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
