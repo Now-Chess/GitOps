@@ -188,19 +188,17 @@ data:
         row.map((v, j) => dataset.headers[j] + ': ' + v).join(', ')
       ).join('\\n');
 
-      const systemPrompt = `You are a chess analytics expert. Explain what this dataset shows to a chess player.
-Be concise but insightful — 3-6 sentences. Focus on what the data reveals about chess patterns,
-player behaviour, or game dynamics. When column names reference chess openings (ECO codes, opening names),
-explain what those openings are.`;
+      const systemPrompt = 'You are a chess analytics expert. Explain what this dataset shows to a chess player. '
+        + 'Be concise but insightful — 3-6 sentences. Focus on what the data reveals about chess patterns, '
+        + 'player behaviour, or game dynamics. When column names reference chess openings (ECO codes, opening names), '
+        + 'explain what those openings are.';
 
-      const userPrompt = `Dataset: "${dataset.label}"
-Total rows: ${dataset.total_rows}
-Columns: ${dataset.headers.join(', ')}
-
-Sample data (first ${dataset.sample.length} rows):
-${sampleText}
-
-What does this dataset tell us about chess?`;
+      const userPrompt = 'Dataset: "' + dataset.label + '"\n'
+        + 'Total rows: ' + dataset.total_rows + '\n'
+        + 'Columns: ' + dataset.headers.join(', ') + '\n\n'
+        + 'Sample data (first ' + dataset.sample.length + ' rows):\n'
+        + sampleText + '\n\n'
+        + 'What does this dataset tell us about chess?';
 
       try {
         const resp = await fetch(NIM_ENDPOINT, {
