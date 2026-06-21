@@ -41,6 +41,11 @@ spec:
           volumeMounts:
             - name: spark-events
               mountPath: /spark-events
+            - name: spark-output
+              mountPath: /spark-output
       volumes:
         - name: spark-events
           emptyDir: {}
+        - name: spark-output
+          persistentVolumeClaim:
+            claimName: spark-analytics-output

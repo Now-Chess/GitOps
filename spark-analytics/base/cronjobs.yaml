@@ -230,6 +230,13 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
           securityContext:
             fsGroup: 185
           imagePullSecrets:
@@ -314,6 +321,13 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
           securityContext:
             fsGroup: 185
           imagePullSecrets:
@@ -397,6 +411,13 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
           securityContext:
             fsGroup: 185
           imagePullSecrets:
@@ -481,6 +502,13 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
           securityContext:
             fsGroup: 185
           imagePullSecrets:
@@ -564,6 +592,13 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
           securityContext:
             fsGroup: 185
           imagePullSecrets:
@@ -647,6 +682,13 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
           securityContext:
             fsGroup: 185
           imagePullSecrets:
@@ -730,6 +772,13 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
           securityContext:
             fsGroup: 185
           imagePullSecrets:
@@ -813,6 +862,13 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
           securityContext:
             fsGroup: 185
           imagePullSecrets:
@@ -896,6 +952,13 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
           securityContext:
             fsGroup: 185
           imagePullSecrets:
@@ -978,6 +1041,13 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
           securityContext:
             fsGroup: 185
           imagePullSecrets:
@@ -1061,6 +1131,13 @@ spec:
         spec:
           serviceAccountName: spark-analytics
           restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
           securityContext:
             fsGroup: 185
           imagePullSecrets:
