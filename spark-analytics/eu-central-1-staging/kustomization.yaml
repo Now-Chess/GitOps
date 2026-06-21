@@ -206,6 +206,132 @@ patches:
       kind: Deployment
       name: spark-live-dashboard
   - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-game-length
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+    target:
+      kind: CronJob
+      name: spark-game-length
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-color-advantage
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+    target:
+      kind: CronJob
+      name: spark-color-advantage
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-elo-distribution
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+    target:
+      kind: CronJob
+      name: spark-elo-distribution
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-time-control
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+    target:
+      kind: CronJob
+      name: spark-time-control
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-daily-activity
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+    target:
+      kind: CronJob
+      name: spark-daily-activity
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-rating-mismatch
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+    target:
+      kind: CronJob
+      name: spark-rating-mismatch
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-termination-stats
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+    target:
+      kind: CronJob
+      name: spark-termination-stats
+  - patch: |-
       apiVersion: apps/v1
       kind: Deployment
       metadata:
