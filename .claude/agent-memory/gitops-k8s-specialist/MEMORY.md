@@ -1,0 +1,1 @@
+- [Spark cluster deployment](project-spark-cluster.md) — chart 9.2.10 service names, history server gap, hostname pattern, standalone mode migration
