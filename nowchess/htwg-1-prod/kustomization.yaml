@@ -73,6 +73,6 @@ images:
 - name: ghcr.io/now-chess/now-chess-systems/store
   newTag: 0.24.0-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/tournament
-  newTag: 0.3.0-x86_v2
+  newTag: 0.4.0-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/ws
   newTag: 0.17.0-x86_v2
