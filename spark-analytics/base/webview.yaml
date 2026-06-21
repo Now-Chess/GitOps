@@ -17,7 +17,7 @@ data:
     import urllib.request
     import psycopg2
     import psycopg2.extras
-    from http.server import BaseHTTPRequestHandler, HTTPServer
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
     PORT = int(os.environ.get("PORT", "8080"))
 
@@ -581,7 +581,7 @@ data:
                 pass
 
     if __name__ == "__main__":
-        server = HTTPServer(("0.0.0.0", PORT), Handler)
+        server = ThreadingHTTPServer(("0.0.0.0", PORT), Handler)
         print(f"Listening on :{PORT}  DB={DB_HOST}:{DB_PORT}/{DB_NAME}  JDBC_URL={_url!r}", flush=True)
         server.serve_forever()
 ---
