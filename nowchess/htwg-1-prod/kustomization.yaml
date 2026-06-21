@@ -41,7 +41,9 @@ patches:
           containers:
             - name: nowchess-official-bots
               env:
-                - name: TOURNAMENT_SERVER_URL
+                - name: TOURNAMENT_SERVICE_URL
+                  value: http://nowchess-tournament-active:8086
+                - name: TOURNAMENT_SELF_URL
                   value: http://141.37.123.132:8086
                 - name: TOURNAMENT_BOT_TOKEN
                   valueFrom:
@@ -51,6 +53,22 @@ patches:
   target:
     kind: Rollout
     name: nowchess-official-bots
+- patch: |-
+    apiVersion: argoproj.io/v1alpha1
+    kind: Rollout
+    metadata:
+      name: nowchess-tournament
+    spec:
+      template:
+        spec:
+          containers:
+            - name: nowchess-tournament
+              env:
+                - name: TOURNAMENT_SELF_URL
+                  value: http://141.37.123.132:8086
+  target:
+    kind: Rollout
+    name: nowchess-tournament
 images:
 - name: ghcr.io/now-chess/now-chess-systems/account
   newTag: 0.25.0-x86_v2

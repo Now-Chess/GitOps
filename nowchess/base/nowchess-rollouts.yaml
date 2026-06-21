@@ -441,6 +441,10 @@ spec:
                   key: INTERNAL_SECRET
             - name: ACCOUNT_SERVICE_URL
               value: http://nowchess-account-active:8083
+            - name: TOURNAMENT_SERVICE_URL
+              value: http://nowchess-tournament-active:8086
+            - name: TOURNAMENT_SELF_URL
+              value: ""
             - name: MP_JWT_VERIFY_PUBLICKEY_LOCATION
               value: /secrets/jwt/public.pem
             - name: MP_JWT_VERIFY_ISSUER
@@ -887,6 +891,8 @@ spec:
                 secretKeyRef:
                   name: ncs-db-secrets
                   key: ACCOUNT_DB_URL
+            - name: TOURNAMENT_SELF_URL
+              value: ""
             - name: MP_JWT_VERIFY_PUBLICKEY_LOCATION
               value: /secrets/jwt/public.pem
           volumeMounts:
