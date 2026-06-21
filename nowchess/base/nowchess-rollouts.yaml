@@ -440,7 +440,7 @@ spec:
                   name: ncs-internal-secret
                   key: INTERNAL_SECRET
             - name: ACCOUNT_SERVICE_URL
-              value: http://nowchess-account:8083
+              value: http://nowchess-account-active:8083
             - name: MP_JWT_VERIFY_PUBLICKEY_LOCATION
               value: /secrets/jwt/public.pem
             - name: MP_JWT_VERIFY_ISSUER
