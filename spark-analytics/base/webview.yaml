@@ -13,6 +13,7 @@ data:
     import json
     import os
     import re
+    import urllib.error
     import urllib.request
     import psycopg2
     import psycopg2.extras
@@ -112,10 +113,22 @@ data:
     .spinner { display: inline-block; width: 12px; height: 12px; border: 2px solid #388bfd;
                border-top-color: transparent; border-radius: 50%; animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    /* Per-row AI */
+    .row-ai-btn { background: none; border: 1px solid #30363d; border-radius: 4px; color: #8b949e;
+                  cursor: pointer; padding: 1px 5px; font-size: 0.72rem; line-height: 1.4; }
+    .row-ai-btn:hover { border-color: #388bfd; color: #58a6ff; }
+    .row-ai-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .row-ai-btn.done { border-color: #238636; color: #3fb950; }
+    .row-expand-tr td { background: #0a0e14; padding: 0.6rem 1rem 0.6rem 2rem;
+                        font-size: 0.8rem; line-height: 1.6; border-bottom: 1px solid #30363d; }
+    .row-explain-text { color: #c9d1d9; white-space: pre-wrap; }
+    .row-explain-error { color: #f85149; }
     """
 
     JS = """
     const NIM_KEY_STORAGE = 'nim_api_key';
+    const rowCache = {};
+    let nimQueue = Promise.resolve();
 
     function getKey() { return localStorage.getItem(NIM_KEY_STORAGE) || ''; }
     function hasKey() { return !!getKey(); }
@@ -168,6 +181,33 @@ data:
       if (btn) btn.disabled = !hasKey();
     }
 
+    async function nimFetch(payload) {
+      const resp = await fetch('/explain', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (resp.status === 429) {
+        const retryAfter = parseInt(resp.headers.get('Retry-After') || '10', 10);
+        const err = new Error('Rate limited — retry in ' + retryAfter + 's');
+        err.retryAfter = retryAfter;
+        throw err;
+      }
+      if (!resp.ok) {
+        const msg = await resp.text();
+        throw new Error('Proxy ' + resp.status + ': ' + msg);
+      }
+      const data = await resp.json();
+      if (data.error) throw new Error(data.error);
+      return data.text || '(no response)';
+    }
+
+    function queueNim(payload) {
+      const next = nimQueue.then(() => nimFetch(payload));
+      nimQueue = next.catch(() => {});
+      return next;
+    }
+
     async function explainDataset() {
       const key = getKey();
       if (!key) { openSettings(); return; }
@@ -182,30 +222,58 @@ data:
       textEl.className = 'explain-text';
       textEl.textContent = '';
 
-      const dataset = window.DATASET;
-
       try {
-        const resp = await fetch('/explain', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ key: key, dataset: dataset }),
-        });
-
-        if (!resp.ok) {
-          const err = await resp.text();
-          throw new Error('Proxy ' + resp.status + ': ' + err);
-        }
-
-        const data = await resp.json();
-        if (data.error) throw new Error(data.error);
-        textEl.textContent = data.text || '(no response)';
+        const text = await queueNim({ key: key, mode: 'dataset', dataset: window.DATASET });
+        textEl.textContent = text;
       } catch (e) {
         textEl.className = 'explain-error';
         textEl.textContent = 'Error: ' + e.message;
       } finally {
         btn.disabled = false;
-        btn.innerHTML = '✦ Explain this dataset';
+        btn.innerHTML = '✦ Analyse top 10 rows';
         updateNoKeyHint();
+      }
+    }
+
+    async function analyzeRow(idx) {
+      const key = getKey();
+      if (!key) { openSettings(); return; }
+      if (rowCache[idx] !== undefined) return;
+
+      const btn = document.getElementById('row-btn-' + idx);
+      const expandRow = document.getElementById('row-expand-' + idx);
+      const textEl = document.getElementById('row-explain-' + idx);
+      if (!btn || !expandRow || !textEl) return;
+
+      const dataset = window.DATASET;
+      const row = dataset.rows && dataset.rows[idx];
+      if (!row) {
+        expandRow.style.display = 'table-row';
+        textEl.className = 'row-explain-error';
+        textEl.textContent = 'Row data not available.';
+        return;
+      }
+
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span>';
+      expandRow.style.display = 'table-row';
+      textEl.className = 'row-explain-text';
+      textEl.textContent = 'Analyzing…';
+
+      try {
+        const text = await queueNim({
+          key: key, mode: 'row',
+          dataset: { label: dataset.label, headers: dataset.headers, row: row },
+        });
+        rowCache[idx] = text;
+        textEl.textContent = text;
+        btn.innerHTML = '✓';
+        btn.classList.add('done');
+      } catch (e) {
+        textEl.className = 'row-explain-error';
+        textEl.textContent = e.message;
+        btn.disabled = false;
+        btn.innerHTML = '⚡';
       }
     }
 
@@ -322,17 +390,18 @@ data:
                 "<div class='notice'>No data yet. Run the CronJob first, then check back.</div>",
             )
 
-        sample = rows[:10]
+        ai_rows = rows[:200]
         dataset_json = json.dumps({
             "label": label,
             "headers": headers,
-            "sample": sample,
+            "sample": rows[:10],
+            "rows": ai_rows,
             "total_rows": len(rows),
         })
 
         explain_bar = (
             "<div class='explain-bar'>"
-            "<button class='explain-btn' id='explain-btn' onclick='explainDataset()'>✦ Explain this dataset</button>"
+            "<button class='explain-btn' id='explain-btn' onclick='explainDataset()'>✦ Analyse top 10 rows</button>"
             "<span class='no-key-hint' id='no-key-hint'>— <a href='#' onclick='openSettings();return false;' style='color:#58a6ff'>add NIM key</a> to enable AI explanations</span>"
             "</div>"
             "<div class='explain-panel' id='explain-panel' style='display:none'>"
@@ -341,11 +410,27 @@ data:
             "</div>"
         )
 
-        ths = "".join(f"<th>{html.escape(h)}</th>" for h in headers)
-        trs = "".join(
-            "<tr>" + "".join(f"<td>{html.escape(str(c))}</td>" for c in row) + "</tr>"
-            for row in rows[:10_000]
-        )
+        num_cols = len(headers)
+        ths = "".join(f"<th>{html.escape(h)}</th>" for h in headers) + "<th></th>"
+        trs = ""
+        for i, row in enumerate(rows[:10_000]):
+            cells = "".join(f"<td>{html.escape(str(c))}</td>" for c in row)
+            if i < 200:
+                ai_cell = (
+                    f"<td><button class='row-ai-btn' id='row-btn-{i}' "
+                    f"onclick='analyzeRow({i})' title='Analyse this row with AI'>⚡</button></td>"
+                )
+                expand = (
+                    f"<tr class='row-expand-tr' id='row-expand-{i}' style='display:none'>"
+                    f"<td colspan='{num_cols + 1}'>"
+                    f"<span id='row-explain-{i}'></span>"
+                    f"</td></tr>"
+                )
+            else:
+                ai_cell = "<td></td>"
+                expand = ""
+            trs += f"<tr>{cells}{ai_cell}</tr>{expand}"
+
         truncated = f" (showing first 10 000 of {len(rows)})" if len(rows) > 10_000 else ""
         return page(
             label,
@@ -384,33 +469,60 @@ data:
             try:
                 body = json.loads(self.rfile.read(length))
                 api_key = body.get("key", "")
+                mode = body.get("mode", "dataset")
                 dataset = body.get("dataset", {})
                 if not api_key:
                     raise ValueError("missing key")
-                sample_text = "\n".join(
-                    ", ".join(f"{h}: {v}" for h, v in zip(dataset.get("headers", []), row))
-                    for row in dataset.get("sample", [])
-                )
-                system_prompt = (
-                    "You are a chess analytics expert. Explain what this dataset shows to a chess player. "
-                    "Be concise but insightful — 3-6 sentences. Focus on what the data reveals about chess patterns, "
-                    "player behaviour, or game dynamics. When column names reference chess openings (ECO codes, opening names), "
-                    "explain what those openings are."
-                )
-                user_prompt = (
-                    f"Dataset: \"{dataset.get('label', '')}\"\n"
-                    f"Total rows: {dataset.get('total_rows', 0)}\n"
-                    f"Columns: {', '.join(dataset.get('headers', []))}\n\n"
-                    f"Sample data (first {len(dataset.get('sample', []))} rows):\n"
-                    f"{sample_text}\n\nWhat does this dataset tell us about chess?"
-                )
+
+                label = dataset.get("label", "")
+                headers = dataset.get("headers", [])
+
+                if mode == "row":
+                    row = dataset.get("row", [])
+                    row_desc = ", ".join(f"{h}: {v}" for h, v in zip(headers, row))
+                    system_prompt = (
+                        "You are a chess analytics expert. Analyze a single data entry from a chess analytics dataset. "
+                        "Be specific and insightful — 3-4 sentences. "
+                        "If the entry involves a chess opening (ECO code or opening name present), explain the opening's "
+                        "strategic ideas, strengths and weaknesses, and why players choose it. "
+                        "For player data, explain what the stats reveal about their playing style. "
+                        "For other types, explain what makes this entry notable."
+                    )
+                    user_prompt = (
+                        f"Dataset: \"{label}\"\n"
+                        f"Columns: {', '.join(headers)}\n\n"
+                        f"Entry to analyze: {row_desc}\n\n"
+                        "Provide a detailed, chess-specific analysis of this entry."
+                    )
+                    max_tokens = 600
+                else:
+                    sample = dataset.get("sample", [])
+                    rows_text = "\n".join(
+                        f"Row {i + 1}: " + ", ".join(f"{h}: {v}" for h, v in zip(headers, row))
+                        for i, row in enumerate(sample)
+                    )
+                    system_prompt = (
+                        "You are a chess analytics expert. Analyze the top 10 entries from a chess analytics dataset. "
+                        "For each entry write 1-2 specific sentences about what is notable. "
+                        "If entries are chess openings (ECO codes or opening names present), name each opening properly "
+                        "and explain its strategic character and why it ranks here. "
+                        "Format your response as 'Row N: [analysis]' for each row."
+                    )
+                    user_prompt = (
+                        f"Dataset: \"{label}\" ({dataset.get('total_rows', 0)} total rows)\n"
+                        f"Columns: {', '.join(headers)}\n\n"
+                        f"Top 10 entries:\n{rows_text}\n\n"
+                        "Analyze each entry."
+                    )
+                    max_tokens = 1024
+
                 payload = json.dumps({
                     "model": "meta/llama-3.3-70b-instruct",
                     "messages": [
                         {"role": "system", "content": system_prompt},
                         {"role": "user", "content": user_prompt},
                     ],
-                    "max_tokens": 512,
+                    "max_tokens": max_tokens,
                     "temperature": 0.4,
                     "stream": False,
                 }).encode("utf-8")
@@ -423,10 +535,26 @@ data:
                     },
                     method="POST",
                 )
-                with urllib.request.urlopen(req, timeout=30) as r:
-                    nim_data = json.loads(r.read())
-                text = nim_data.get("choices", [{}])[0].get("message", {}).get("content", "(no response)")
-                self._send_json({"text": text})
+                try:
+                    with urllib.request.urlopen(req, timeout=30) as r:
+                        nim_data = json.loads(r.read())
+                    text = nim_data.get("choices", [{}])[0].get("message", {}).get("content", "(no response)")
+                    self._send_json({"text": text})
+                except urllib.error.HTTPError as he:
+                    if he.code == 429:
+                        retry_after = he.headers.get("Retry-After", "10")
+                        resp_body = json.dumps({"error": f"Rate limited — retry in {retry_after}s"}).encode("utf-8")
+                        self.send_response(429)
+                        self.send_header("Content-Type", "application/json")
+                        self.send_header("Content-Length", str(len(resp_body)))
+                        self.send_header("Retry-After", str(retry_after))
+                        self.end_headers()
+                        try:
+                            self.wfile.write(resp_body)
+                        except BrokenPipeError:
+                            pass
+                    else:
+                        self._send_json({"error": f"NIM API error {he.code}: {he.reason}"})
             except Exception as e:
                 self._send_json({"error": str(e)})
 
