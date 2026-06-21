@@ -6,7 +6,7 @@ resources:
   - webview-ingress.yaml
 images:
   - name: ghcr.io/now-chess/now-chess-systems/analytics
-    newTag: 0.2.0
+    newTag: 0.7.0
 patches:
   - patch: |-
       apiVersion: batch/v1
