@@ -442,7 +442,7 @@ spec:
             - name: ACCOUNT_SERVICE_URL
               value: http://nowchess-account-active:8083
             - name: TOURNAMENT_SERVICE_URL
-              value: http://nowchess-tournament-active:8086
+              value: http://nowchess-tournament-active:8088
             - name: TOURNAMENT_SELF_URL
               value: ""
             - name: MP_JWT_VERIFY_PUBLICKEY_LOCATION
