@@ -13,6 +13,7 @@ data:
     import json
     import os
     import re
+    import urllib.request
     import psycopg2
     import psycopg2.extras
     from http.server import BaseHTTPRequestHandler, HTTPServer
@@ -115,8 +116,6 @@ data:
 
     JS = """
     const NIM_KEY_STORAGE = 'nim_api_key';
-    const NIM_ENDPOINT = 'https://integrate.api.nvidia.com/v1/chat/completions';
-    const NIM_MODEL = 'meta/llama-3.3-70b-instruct';
 
     function getKey() { return localStorage.getItem(NIM_KEY_STORAGE) || ''; }
     function hasKey() { return !!getKey(); }
@@ -184,49 +183,22 @@ data:
       textEl.textContent = '';
 
       const dataset = window.DATASET;
-      const sampleText = dataset.sample.map((row, i) =>
-        row.map((v, j) => dataset.headers[j] + ': ' + v).join(', ')
-      ).join('\\n');
-
-      const systemPrompt = 'You are a chess analytics expert. Explain what this dataset shows to a chess player. '
-        + 'Be concise but insightful — 3-6 sentences. Focus on what the data reveals about chess patterns, '
-        + 'player behaviour, or game dynamics. When column names reference chess openings (ECO codes, opening names), '
-        + 'explain what those openings are.';
-
-      const userPrompt = 'Dataset: "' + dataset.label + '"\\n'
-        + 'Total rows: ' + dataset.total_rows + '\\n'
-        + 'Columns: ' + dataset.headers.join(', ') + '\\n\\n'
-        + 'Sample data (first ' + dataset.sample.length + ' rows):\\n'
-        + sampleText + '\\n\\n'
-        + 'What does this dataset tell us about chess?';
 
       try {
-        const resp = await fetch(NIM_ENDPOINT, {
+        const resp = await fetch('/explain', {
           method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + key,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            model: NIM_MODEL,
-            messages: [
-              { role: 'system', content: systemPrompt },
-              { role: 'user', content: userPrompt },
-            ],
-            max_tokens: 512,
-            temperature: 0.4,
-            stream: false,
-          }),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: key, dataset: dataset }),
         });
 
         if (!resp.ok) {
           const err = await resp.text();
-          throw new Error('NIM API ' + resp.status + ': ' + err);
+          throw new Error('Proxy ' + resp.status + ': ' + err);
         }
 
         const data = await resp.json();
-        const text = data.choices?.[0]?.message?.content || '(no response)';
-        textEl.textContent = text;
+        if (data.error) throw new Error(data.error);
+        textEl.textContent = data.text || '(no response)';
       } catch (e) {
         textEl.className = 'explain-error';
         textEl.textContent = 'Error: ' + e.message;
@@ -402,10 +374,77 @@ data:
                 self.send_response(404)
                 self.end_headers()
 
+        def do_POST(self):
+            path = self.path.split("?")[0].lstrip("/")
+            if path != "explain":
+                self.send_response(404)
+                self.end_headers()
+                return
+            length = int(self.headers.get("Content-Length", 0))
+            try:
+                body = json.loads(self.rfile.read(length))
+                api_key = body.get("key", "")
+                dataset = body.get("dataset", {})
+                if not api_key:
+                    raise ValueError("missing key")
+                sample_text = "\n".join(
+                    ", ".join(f"{h}: {v}" for h, v in zip(dataset.get("headers", []), row))
+                    for row in dataset.get("sample", [])
+                )
+                system_prompt = (
+                    "You are a chess analytics expert. Explain what this dataset shows to a chess player. "
+                    "Be concise but insightful — 3-6 sentences. Focus on what the data reveals about chess patterns, "
+                    "player behaviour, or game dynamics. When column names reference chess openings (ECO codes, opening names), "
+                    "explain what those openings are."
+                )
+                user_prompt = (
+                    f"Dataset: \"{dataset.get('label', '')}\"\n"
+                    f"Total rows: {dataset.get('total_rows', 0)}\n"
+                    f"Columns: {', '.join(dataset.get('headers', []))}\n\n"
+                    f"Sample data (first {len(dataset.get('sample', []))} rows):\n"
+                    f"{sample_text}\n\nWhat does this dataset tell us about chess?"
+                )
+                payload = json.dumps({
+                    "model": "meta/llama-3.3-70b-instruct",
+                    "messages": [
+                        {"role": "system", "content": system_prompt},
+                        {"role": "user", "content": user_prompt},
+                    ],
+                    "max_tokens": 512,
+                    "temperature": 0.4,
+                    "stream": False,
+                }).encode("utf-8")
+                req = urllib.request.Request(
+                    "https://integrate.api.nvidia.com/v1/chat/completions",
+                    data=payload,
+                    headers={
+                        "Authorization": f"Bearer {api_key}",
+                        "Content-Type": "application/json",
+                    },
+                    method="POST",
+                )
+                with urllib.request.urlopen(req, timeout=30) as r:
+                    nim_data = json.loads(r.read())
+                text = nim_data.get("choices", [{}])[0].get("message", {}).get("content", "(no response)")
+                self._send_json({"text": text})
+            except Exception as e:
+                self._send_json({"error": str(e)})
+
         def _send(self, body: str):
             data = body.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            try:
+                self.wfile.write(data)
+            except BrokenPipeError:
+                pass
+
+        def _send_json(self, obj: dict):
+            data = json.dumps(obj).encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json")
             self.send_header("Content-Length", str(len(data)))
             self.end_headers()
             try:
