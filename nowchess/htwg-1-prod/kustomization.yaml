@@ -66,6 +66,8 @@ patches:
               env:
                 - name: TOURNAMENT_SELF_URL
                   value: http://141.147.25.239
+                - name: TOURNAMENT_EXTERNAL_SERVERS
+                  value: http://141.37.123.132:8086
   target:
     kind: Rollout
     name: nowchess-tournament

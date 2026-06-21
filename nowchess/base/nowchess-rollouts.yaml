@@ -893,6 +893,8 @@ spec:
                   key: ACCOUNT_DB_URL
             - name: TOURNAMENT_SELF_URL
               value: ""
+            - name: TOURNAMENT_EXTERNAL_SERVERS
+              value: ""
             - name: MP_JWT_VERIFY_PUBLICKEY_LOCATION
               value: /secrets/jwt/public.pem
           volumeMounts:
