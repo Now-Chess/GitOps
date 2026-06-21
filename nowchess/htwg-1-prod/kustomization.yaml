@@ -12,7 +12,7 @@ patches:
       name: nowchess-env-config
     data:
       QUARKUS_PROFILE: deployed
-      CORS_ORIGINS: http://141.37.74.142
+      CORS_ORIGINS: http://141.37.123.122
       NOWCHESS_COORDINATOR_ENABLED: "false"
       REDIS_PREFIX: nowchess
       QUARKUS_LOG_LEVEL: "WARN"
