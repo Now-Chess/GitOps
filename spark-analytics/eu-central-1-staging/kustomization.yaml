@@ -46,6 +46,8 @@ patches:
                     env:
                       - name: NOWCHESS_PGN_PATH
                         value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
     target:
       kind: CronJob
       name: spark-opening-book
@@ -86,6 +88,8 @@ patches:
                     env:
                       - name: NOWCHESS_PGN_PATH
                         value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
     target:
       kind: CronJob
       name: spark-player-stats
@@ -127,6 +131,8 @@ patches:
                     env:
                       - name: NOWCHESS_PGN_PATH
                         value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
     target:
       kind: CronJob
       name: spark-player-clustering
@@ -167,6 +173,8 @@ patches:
                     env:
                       - name: NOWCHESS_PGN_PATH
                         value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
     target:
       kind: CronJob
       name: spark-player-graph
@@ -220,6 +228,8 @@ patches:
                     env:
                       - name: NOWCHESS_PGN_PATH
                         value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
     target:
       kind: CronJob
       name: spark-game-length
@@ -238,6 +248,8 @@ patches:
                     env:
                       - name: NOWCHESS_PGN_PATH
                         value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
     target:
       kind: CronJob
       name: spark-color-advantage
@@ -256,6 +268,8 @@ patches:
                     env:
                       - name: NOWCHESS_PGN_PATH
                         value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
     target:
       kind: CronJob
       name: spark-elo-distribution
@@ -274,6 +288,8 @@ patches:
                     env:
                       - name: NOWCHESS_PGN_PATH
                         value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
     target:
       kind: CronJob
       name: spark-time-control
@@ -292,6 +308,8 @@ patches:
                     env:
                       - name: NOWCHESS_PGN_PATH
                         value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
     target:
       kind: CronJob
       name: spark-daily-activity
@@ -310,6 +328,8 @@ patches:
                     env:
                       - name: NOWCHESS_PGN_PATH
                         value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
     target:
       kind: CronJob
       name: spark-rating-mismatch
@@ -328,6 +348,8 @@ patches:
                     env:
                       - name: NOWCHESS_PGN_PATH
                         value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
     target:
       kind: CronJob
       name: spark-termination-stats
