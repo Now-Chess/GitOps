@@ -44,7 +44,7 @@ patches:
                 - name: TOURNAMENT_SERVICE_URL
                   value: http://nowchess-tournament-active:8086
                 - name: TOURNAMENT_SELF_URL
-                  value: http://141.37.123.132:8086
+                  value: http://141.147.25.239:8086
                 - name: TOURNAMENT_BOT_TOKEN
                   valueFrom:
                     secretKeyRef:
@@ -65,7 +65,7 @@ patches:
             - name: nowchess-tournament
               env:
                 - name: TOURNAMENT_SELF_URL
-                  value: http://141.37.123.132:8086
+                  value: http://141.147.25.239:8086
   target:
     kind: Rollout
     name: nowchess-tournament
