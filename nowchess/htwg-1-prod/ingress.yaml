@@ -60,6 +60,13 @@ spec:
                 name: nowchess-official-bots-active
                 port:
                   number: 8088
+          - path: /api/analysis
+            pathType: Prefix
+            backend:
+              service:
+                name: nowchess-analysis-active
+                port:
+                  number: 8087
           - path: /api
             pathType: Prefix
             backend:
