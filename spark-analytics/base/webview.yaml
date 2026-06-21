@@ -1,0 +1,246 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spark-analytics-webview
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+data:
+  serve.py: |
+    #!/usr/bin/env python3
+    """Spark analytics results viewer — reads CSV output from PVC, serves HTML tables."""
+    import csv
+    import glob
+    import html
+    import os
+    from http.server import BaseHTTPRequestHandler, HTTPServer
+
+    OUTPUT_DIR = os.environ.get("SPARK_OUTPUT_DIR", "/spark-output")
+    PORT = int(os.environ.get("PORT", "8080"))
+
+    # Each tuple: (url-slug, display label, path relative to SPARK_OUTPUT_DIR)
+    # Paths mirror the CronJob outputDir arg + the subdir each job writes CSV to.
+    DATASETS = [
+        ("opening-book", "Opening Book (Top 1000)", "opening-book/opening_book_top1000"),
+        ("player-stats", "Player Statistics", "player-stats/player_stats_csv"),
+        ("cluster-archetypes", "Cluster Archetypes", "player-clusters/cluster_archetypes"),
+        ("component-sizes", "Graph Component Sizes", "player-graph/component_sizes"),
+        ("game-length", "Game Length Distribution", "game-length/game_length_distribution"),
+        ("game-length-by-result", "Game Length by Result", "game-length/game_length_by_result"),
+        ("color-advantage", "Color Advantage", "color-advantage/color_advantage"),
+        ("elo-distribution", "ELO Distribution", "elo-distribution/elo_distribution"),
+        ("time-control", "Time Control Analysis", "time-control/time_control_stats"),
+        ("hourly-activity", "Hourly Activity", "daily-activity/hourly_activity"),
+        ("weekly-activity", "Weekly Activity", "daily-activity/weekly_activity"),
+        ("rating-mismatch", "Rating Mismatch (Upsets)", "rating-mismatch/rating_mismatch"),
+        ("termination-stats", "Termination Types", "termination-stats/termination_stats"),
+    ]
+
+    CSS = """
+    * { box-sizing: border-box; }
+    body { font-family: 'Segoe UI', sans-serif; margin: 0; background: #0d1117; color: #c9d1d9; }
+    header { background: #161b22; border-bottom: 1px solid #30363d; padding: 1rem 2rem; }
+    header h1 { margin: 0; color: #58a6ff; font-size: 1.25rem; font-weight: 600; }
+    header span { color: #8b949e; font-size: 0.875rem; margin-left: 0.5rem; }
+    main { padding: 1.5rem 2rem; }
+    h2 { color: #e6edf3; font-size: 1rem; font-weight: 600; margin: 0 0 1rem; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
+    .card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; padding: 1rem; }
+    .card h3 { margin: 0 0 0.5rem; font-size: 0.9rem; color: #58a6ff; }
+    .card a { text-decoration: none; color: inherit; display: block; }
+    .card a:hover .card-label { text-decoration: underline; }
+    .badge { display: inline-block; background: #21262d; border: 1px solid #30363d;
+             border-radius: 12px; padding: 1px 8px; font-size: 0.75rem; color: #8b949e; }
+    .badge.ready { border-color: #238636; color: #3fb950; }
+    .back { color: #58a6ff; text-decoration: none; font-size: 0.875rem; }
+    .back:hover { text-decoration: underline; }
+    .meta { color: #8b949e; font-size: 0.8rem; margin: 0.5rem 0 1rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    thead th { background: #161b22; position: sticky; top: 0; padding: 6px 12px;
+               text-align: left; color: #8b949e; border-bottom: 1px solid #30363d;
+               font-weight: 600; white-space: nowrap; }
+    tbody td { padding: 5px 12px; border-bottom: 1px solid #21262d; }
+    tbody tr:hover td { background: #161b22; }
+    .table-wrap { overflow-x: auto; border: 1px solid #30363d; border-radius: 6px; }
+    .notice { background: #161b22; border: 1px solid #30363d; border-radius: 6px;
+              padding: 1.5rem; color: #8b949e; }
+    """
+
+    def read_csv_parts(subdir: str) -> tuple[list[str], list[list[str]]]:
+        files = sorted(glob.glob(f"{OUTPUT_DIR}/{subdir}/part-*.csv"))
+        headers: list[str] = []
+        rows: list[list[str]] = []
+        for f in files:
+            with open(f, newline="", encoding="utf-8") as fh:
+                reader = csv.reader(fh)
+                for i, row in enumerate(reader):
+                    if i == 0 and not headers:
+                        headers = row
+                    elif headers:
+                        rows.append(row)
+        return headers, rows
+
+    def dataset_status(subdir: str) -> tuple[int, int]:
+        files = glob.glob(f"{OUTPUT_DIR}/{subdir}/part-*.csv")
+        return len(files), sum(os.path.getsize(f) for f in files)
+
+    def page(title: str, body: str) -> str:
+        return (
+            f"<!doctype html><html lang=en><head><meta charset=utf-8>"
+            f"<meta name=viewport content='width=device-width,initial-scale=1'>"
+            f"<title>{html.escape(title)} — Spark Analytics</title>"
+            f"<style>{CSS}</style></head><body>"
+            f"<header><h1>Spark Analytics</h1><span>NowChess · staging</span></header>"
+            f"<main>{body}</main></body></html>"
+        )
+
+    def index_html() -> str:
+        cards = ""
+        for slug, label, subdir in DATASETS:
+            parts, size_bytes = dataset_status(subdir)
+            if parts:
+                size_kb = size_bytes // 1024
+                badge = f'<span class="badge ready">{parts} part(s) · {size_kb} KB</span>'
+            else:
+                badge = '<span class="badge">no data yet</span>'
+            cards += (
+                f'<div class="card"><a href="/{slug}">'
+                f'<div class="card-label"><h3>{html.escape(label)}</h3></div>'
+                f"{badge}</a></div>"
+            )
+        return page(
+            "Results",
+            f"<h2>Datasets</h2><div class='cards'>{cards}</div>",
+        )
+
+    def table_html(slug: str, label: str, subdir: str) -> str:
+        headers, rows = read_csv_parts(subdir)
+        back = '<a class="back" href="/">← All datasets</a>'
+        if not headers:
+            return page(
+                label,
+                f"{back}<h2>{html.escape(label)}</h2>"
+                "<div class='notice'>No data yet. Run the CronJob first, then check back.</div>",
+            )
+        ths = "".join(f"<th>{html.escape(h)}</th>" for h in headers)
+        trs = "".join(
+            "<tr>" + "".join(f"<td>{html.escape(str(c))}</td>" for c in row) + "</tr>"
+            for row in rows[:10_000]
+        )
+        truncated = f" (showing first 10 000 of {len(rows)})" if len(rows) > 10_000 else ""
+        return page(
+            label,
+            f"{back}<h2>{html.escape(label)}</h2>"
+            f"<p class='meta'>{len(rows)} rows{truncated}</p>"
+            f"<div class='table-wrap'><table><thead><tr>{ths}</tr></thead>"
+            f"<tbody>{trs}</tbody></table></div>",
+        )
+
+    SLUG_MAP = {s: (label, subdir) for s, label, subdir in DATASETS}
+
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, fmt, *args):
+            pass
+
+        def do_GET(self):
+            path = self.path.split("?")[0].lstrip("/")
+            if path == "" or path == "index.html":
+                self._send(index_html())
+            elif path in SLUG_MAP:
+                label, subdir = SLUG_MAP[path]
+                self._send(table_html(path, label, subdir))
+            else:
+                self.send_response(404)
+                self.end_headers()
+
+        def _send(self, body: str):
+            data = body.encode("utf-8")
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+
+    if __name__ == "__main__":
+        server = HTTPServer(("0.0.0.0", PORT), Handler)
+        print(f"Listening on :{PORT}  OUTPUT_DIR={OUTPUT_DIR}", flush=True)
+        server.serve_forever()
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-analytics-webview
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  replicas: 0
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: spark-analytics-webview
+  template:
+    metadata:
+      labels:
+        app: spark-analytics-webview
+        app.kubernetes.io/name: spark-analytics
+        app.kubernetes.io/part-of: nowchess
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65534
+        fsGroup: 65534
+      containers:
+        - name: webview
+          image: python:3.12-slim
+          command: ["python", "/scripts/serve.py"]
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPARK_OUTPUT_DIR
+              value: /spark-output
+            - name: PORT
+              value: "8080"
+          volumeMounts:
+            - name: spark-output
+              mountPath: /spark-output
+              readOnly: true
+            - name: scripts
+              mountPath: /scripts
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 8080
+            initialDelaySeconds: 3
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
+      volumes:
+        - name: spark-output
+          persistentVolumeClaim:
+            claimName: spark-analytics-output
+        - name: scripts
+          configMap:
+            name: spark-analytics-webview
+            defaultMode: 0755
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-analytics-webview
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  selector:
+    app: spark-analytics-webview
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080

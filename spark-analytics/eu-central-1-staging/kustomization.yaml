@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: nowchess-staging
 resources:
   - ../base
+  - webview-ingress.yaml
 images:
   - name: ghcr.io/now-chess/now-chess-systems/analytics
     newTag: 0.2.0
@@ -42,6 +43,9 @@ patches:
                       - file:///app/analytics.jar
                       - /spark-output/opening-book
                       - "10"
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
     target:
       kind: CronJob
       name: spark-opening-book
@@ -79,6 +83,9 @@ patches:
                       - de.nowchess.analytics.PlayerStatsJob
                       - file:///app/analytics.jar
                       - /spark-output/player-stats
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
     target:
       kind: CronJob
       name: spark-player-stats
@@ -117,6 +124,9 @@ patches:
                       - file:///app/analytics.jar
                       - /spark-output/player-clusters
                       - "4"
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
     target:
       kind: CronJob
       name: spark-player-clustering
@@ -154,6 +164,9 @@ patches:
                       - de.nowchess.analytics.PlayerGraphJob
                       - file:///app/analytics.jar
                       - /spark-output/player-graph
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
     target:
       kind: CronJob
       name: spark-player-graph
@@ -192,3 +205,13 @@ patches:
     target:
       kind: Deployment
       name: spark-live-dashboard
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: spark-analytics-webview
+      spec:
+        replicas: 1
+    target:
+      kind: Deployment
+      name: spark-analytics-webview

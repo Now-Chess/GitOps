@@ -7,3 +7,4 @@ resources:
   - pvc.yaml
   - cronjobs.yaml
   - streaming.yaml
+  - webview.yaml
