@@ -25,8 +25,8 @@ patches:
     metadata:
       name: nowchess-frontend-env-config
     data:
-      API_URL: "http://141.37.74.142"
-      WEBSOCKET_URL: "ws://141.37.74.142"
+      API_URL: "http://141.37.123.122"
+      WEBSOCKET_URL: "ws://141.37.123.122"
   target:
     kind: ConfigMap
     name: nowchess-frontend-env-config
