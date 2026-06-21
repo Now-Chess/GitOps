@@ -18,10 +18,10 @@ data:
 
     PORT = int(os.environ.get("PORT", "8080"))
 
-    _url = os.environ.get("NOWCHESS_JDBC_URL", "jdbc:postgresql://localhost:5432/nowchess")
-    _m = re.match(r"jdbc:postgresql://([^:/]+):(\d+)/(.+)", _url)
+    _url = os.environ.get("NOWCHESS_JDBC_URL", "")
+    _m = re.match(r"jdbc:postgresql://([^:/]+)(?::(\d+))?/([^?]+)", _url)
     DB_HOST = _m.group(1) if _m else "localhost"
-    DB_PORT = int(_m.group(2)) if _m else 5432
+    DB_PORT = int(_m.group(2)) if (_m and _m.group(2)) else 5432
     DB_NAME = _m.group(3) if _m else "nowchess"
     DB_USER = os.environ.get("NOWCHESS_DB_USER", "nowchess")
     DB_PASS = os.environ.get("NOWCHESS_DB_PASS", "")
@@ -134,7 +134,7 @@ data:
             return page(
                 label,
                 f"{back}<h2>{html.escape(label)}</h2>"
-                f"<div class='notice'>Error querying {html.escape(table)}: {html.escape(str(e))}</div>",
+                f"<div class='notice'>Error querying {html.escape(table)} on {html.escape(DB_HOST)}:{DB_PORT}/{html.escape(DB_NAME)}: {html.escape(str(e))}</div>",
             )
         if not headers:
             return page(
@@ -183,7 +183,7 @@ data:
 
     if __name__ == "__main__":
         server = HTTPServer(("0.0.0.0", PORT), Handler)
-        print(f"Listening on :{PORT}  DB={DB_HOST}:{DB_PORT}/{DB_NAME}", flush=True)
+        print(f"Listening on :{PORT}  DB={DB_HOST}:{DB_PORT}/{DB_NAME}  JDBC_URL={_url!r}", flush=True)
         server.serve_forever()
 ---
 apiVersion: apps/v1
