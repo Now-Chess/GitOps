@@ -74,7 +74,7 @@ patches:
     name: nowchess-tournament
 images:
 - name: ghcr.io/now-chess/now-chess-systems/account
-  newTag: 0.25.0-x86_v2
+  newTag: 0.26.0-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/analysis
   newTag: 0.1.0-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/bot-platform
