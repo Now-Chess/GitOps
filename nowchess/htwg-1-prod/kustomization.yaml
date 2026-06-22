@@ -16,6 +16,7 @@ patches:
       NOWCHESS_COORDINATOR_ENABLED: "false"
       REDIS_PREFIX: nowchess
       QUARKUS_LOG_LEVEL: "WARN"
+      OTEL_SDK_DISABLED: "true"
   target:
     kind: ConfigMap
     name: nowchess-env-config
