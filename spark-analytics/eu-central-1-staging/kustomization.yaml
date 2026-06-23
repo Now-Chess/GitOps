@@ -353,6 +353,70 @@ patches:
     target:
       kind: CronJob
       name: spark-termination-stats
+  # Eval-annotated dump required for per-move accuracy; the default 2013 dump
+  # carries no [%eval] comments — point this at an evals dump for real output.
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-accuracy-blunder
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
+    target:
+      kind: CronJob
+      name: spark-accuracy-blunder
+  # Clock-annotated dump required; the default 2013 dump carries no [%clk]
+  # comments — point this at a dump with clocks for real output.
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-clock-pressure
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
+    target:
+      kind: CronJob
+      name: spark-clock-pressure
+  - patch: |-
+      apiVersion: batch/v1
+      kind: CronJob
+      metadata:
+        name: spark-smurf-anomaly
+      spec:
+        jobTemplate:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: spark-driver
+                    env:
+                      - name: NOWCHESS_PGN_PATH
+                        value: "https://database.lichess.org/standard/lichess_db_standard_rated_2013-01.pgn.zst"
+                      - name: NOWCHESS_PGN_CACHE_DIR
+                        value: "/spark-output/.pgn-cache"
+    target:
+      kind: CronJob
+      name: spark-smurf-anomaly
   - patch: |-
       apiVersion: apps/v1
       kind: Deployment

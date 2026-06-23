@@ -44,6 +44,12 @@ data:
         ("weekly-activity",       "Weekly Activity",            "analytics_weekly_activity"),
         ("rating-mismatch",       "Rating Mismatch (Upsets)",   "analytics_rating_mismatch"),
         ("termination-stats",     "Termination Types",          "analytics_termination_stats"),
+        ("accuracy-by-rating",    "Accuracy by Rating",         "analytics_accuracy_by_rating"),
+        ("blunder-outcome",       "Blunder Outcome",            "analytics_blunder_outcome"),
+        ("clock-by-rating",       "Clock Pressure by Rating",   "analytics_clock_by_rating"),
+        ("scramble-outcome",      "Scramble Outcome",           "analytics_scramble_outcome"),
+        ("smurf-anomaly",         "Smurf Anomaly Scores",       "analytics_smurf_anomaly"),
+        ("flagged-smurfs",        "Flagged Smurfs",             "analytics_flagged_smurfs"),
     ]
 
     CSS = """

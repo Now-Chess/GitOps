@@ -1197,3 +1197,331 @@ spec:
             - name: spark-output
               persistentVolumeClaim:
                 claimName: spark-analytics-output
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-accuracy-blunder-driver
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  clusterIP: None
+  selector:
+    app: spark-accuracy-blunder
+  ports:
+    - name: driver
+      port: 44167
+      targetPort: 44167
+    - name: blockmanager
+      port: 44777
+      targetPort: 44777
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-clock-pressure-driver
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  clusterIP: None
+  selector:
+    app: spark-clock-pressure
+  ports:
+    - name: driver
+      port: 44167
+      targetPort: 44167
+    - name: blockmanager
+      port: 44777
+      targetPort: 44777
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-smurf-anomaly-driver
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  clusterIP: None
+  selector:
+    app: spark-smurf-anomaly
+  ports:
+    - name: driver
+      port: 44167
+      targetPort: 44167
+    - name: blockmanager
+      port: 44777
+      targetPort: 44777
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: spark-accuracy-blunder
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  schedule: "0 9 * * 6"
+  suspend: true
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app: spark-accuracy-blunder
+            app.kubernetes.io/name: spark-analytics
+            app.kubernetes.io/part-of: nowchess
+        spec:
+          serviceAccountName: spark-analytics
+          restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
+          securityContext:
+            fsGroup: 185
+          imagePullSecrets:
+            - name: ghcr-pull-secret
+          containers:
+            - name: spark-driver
+              image: ghcr.io/now-chess/now-chess-systems/analytics:latest
+              command:
+                - /opt/spark/bin/spark-submit
+                - --master
+                - spark://spark-master:7077
+                - --conf
+                - spark.executor.instances=1
+                - --conf
+                - spark.executor.cores=1
+                - --conf
+                - spark.executor.memory=512m
+                - --conf
+                - spark.driver.memory=512m
+                - --conf
+                - spark.driver.host=spark-accuracy-blunder-driver
+                - --conf
+                - spark.driver.port=44167
+                - --conf
+                - spark.blockManager.port=44777
+                - --class
+                - de.nowchess.analytics.AccuracyBlunderJob
+                - file:///app/analytics.jar
+                - /spark-output/accuracy
+              env:
+                - name: NOWCHESS_JDBC_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_URL
+                - name: NOWCHESS_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_USER
+                - name: NOWCHESS_DB_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_PASSWORD
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: "1"
+                  memory: 1Gi
+              volumeMounts:
+                - name: spark-output
+                  mountPath: /spark-output
+          volumes:
+            - name: spark-output
+              persistentVolumeClaim:
+                claimName: spark-analytics-output
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: spark-clock-pressure
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  schedule: "0 10 * * 6"
+  suspend: true
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app: spark-clock-pressure
+            app.kubernetes.io/name: spark-analytics
+            app.kubernetes.io/part-of: nowchess
+        spec:
+          serviceAccountName: spark-analytics
+          restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
+          securityContext:
+            fsGroup: 185
+          imagePullSecrets:
+            - name: ghcr-pull-secret
+          containers:
+            - name: spark-driver
+              image: ghcr.io/now-chess/now-chess-systems/analytics:latest
+              command:
+                - /opt/spark/bin/spark-submit
+                - --master
+                - spark://spark-master:7077
+                - --conf
+                - spark.executor.instances=1
+                - --conf
+                - spark.executor.cores=1
+                - --conf
+                - spark.executor.memory=512m
+                - --conf
+                - spark.driver.memory=512m
+                - --conf
+                - spark.driver.host=spark-clock-pressure-driver
+                - --conf
+                - spark.driver.port=44167
+                - --conf
+                - spark.blockManager.port=44777
+                - --class
+                - de.nowchess.analytics.ClockPressureJob
+                - file:///app/analytics.jar
+                - /spark-output/clock-pressure
+              env:
+                - name: NOWCHESS_JDBC_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_URL
+                - name: NOWCHESS_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_USER
+                - name: NOWCHESS_DB_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_PASSWORD
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: "1"
+                  memory: 1Gi
+              volumeMounts:
+                - name: spark-output
+                  mountPath: /spark-output
+          volumes:
+            - name: spark-output
+              persistentVolumeClaim:
+                claimName: spark-analytics-output
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: spark-smurf-anomaly
+  labels:
+    app.kubernetes.io/name: spark-analytics
+    app.kubernetes.io/part-of: nowchess
+spec:
+  schedule: "0 11 * * 6"
+  suspend: true
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      template:
+        metadata:
+          labels:
+            app: spark-smurf-anomaly
+            app.kubernetes.io/name: spark-analytics
+            app.kubernetes.io/part-of: nowchess
+        spec:
+          serviceAccountName: spark-analytics
+          restartPolicy: OnFailure
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: spark-worker
+                  topologyKey: kubernetes.io/hostname
+          securityContext:
+            fsGroup: 185
+          imagePullSecrets:
+            - name: ghcr-pull-secret
+          containers:
+            - name: spark-driver
+              image: ghcr.io/now-chess/now-chess-systems/analytics:latest
+              command:
+                - /opt/spark/bin/spark-submit
+                - --master
+                - spark://spark-master:7077
+                - --conf
+                - spark.executor.instances=1
+                - --conf
+                - spark.executor.cores=1
+                - --conf
+                - spark.executor.memory=512m
+                - --conf
+                - spark.driver.memory=512m
+                - --conf
+                - spark.driver.host=spark-smurf-anomaly-driver
+                - --conf
+                - spark.driver.port=44167
+                - --conf
+                - spark.blockManager.port=44777
+                - --class
+                - de.nowchess.analytics.SmurfAnomalyJob
+                - file:///app/analytics.jar
+                - /spark-output/smurf-anomaly
+                - "15"
+              env:
+                - name: NOWCHESS_JDBC_URL
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_URL
+                - name: NOWCHESS_DB_USER
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_USER
+                - name: NOWCHESS_DB_PASS
+                  valueFrom:
+                    secretKeyRef:
+                      name: ncs-db-secrets
+                      key: STORE_DB_PASSWORD
+              resources:
+                requests:
+                  cpu: 50m
+                  memory: 64Mi
+                limits:
+                  cpu: "1"
+                  memory: 1Gi
+              volumeMounts:
+                - name: spark-output
+                  mountPath: /spark-output
+          volumes:
+            - name: spark-output
+              persistentVolumeClaim:
+                claimName: spark-analytics-output
