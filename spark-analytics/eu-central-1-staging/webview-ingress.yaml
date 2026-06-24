@@ -9,6 +9,10 @@ metadata:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    # AI /explain streams Server-Sent Events — disable response buffering so
+    # chunks flush to the client immediately, and allow gaps between chunks.
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
 spec:
   ingressClassName: nginx
   rules:

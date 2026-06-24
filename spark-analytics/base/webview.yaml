@@ -187,37 +187,52 @@ data:
       if (btn) btn.disabled = !hasKey();
     }
 
-    async function nimFetch(payload) {
+    async function nimStream(payload, onDelta) {
       const ctrl = new AbortController();
-      const tid = setTimeout(() => ctrl.abort(), 65000);
-      let resp;
+      const tid = setTimeout(() => ctrl.abort(), 180000);
       try {
-        resp = await fetch('/explain', {
+        const resp = await fetch('/explain', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload),
           signal: ctrl.signal,
         });
+        if (resp.status === 429) {
+          const retryAfter = parseInt(resp.headers.get('Retry-After') || '10', 10);
+          const err = new Error('Rate limited — retry in ' + retryAfter + 's');
+          err.retryAfter = retryAfter;
+          throw err;
+        }
+        if (!resp.ok) {
+          const msg = await resp.text();
+          throw new Error('Proxy ' + resp.status + ': ' + msg);
+        }
+        const reader = resp.body.getReader();
+        const dec = new TextDecoder();
+        const SEP = String.fromCharCode(10, 10);  // "\n\n" — avoids YAML backslash escaping
+        let buf = '', full = '';
+        for (;;) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += dec.decode(value, { stream: true });
+          let idx;
+          while ((idx = buf.indexOf(SEP)) >= 0) {
+            const frame = buf.slice(0, idx).trim();
+            buf = buf.slice(idx + 2);
+            if (!frame.startsWith('data:')) continue;
+            const obj = JSON.parse(frame.slice(5).trim());
+            if (obj.error) throw new Error(obj.error);
+            if (obj.delta) { full += obj.delta; onDelta(full); }
+          }
+        }
+        return full || '(no response)';
       } finally {
         clearTimeout(tid);
       }
-      if (resp.status === 429) {
-        const retryAfter = parseInt(resp.headers.get('Retry-After') || '10', 10);
-        const err = new Error('Rate limited — retry in ' + retryAfter + 's');
-        err.retryAfter = retryAfter;
-        throw err;
-      }
-      if (!resp.ok) {
-        const msg = await resp.text();
-        throw new Error('Proxy ' + resp.status + ': ' + msg);
-      }
-      const data = await resp.json();
-      if (data.error) throw new Error(data.error);
-      return data.text || '(no response)';
     }
 
-    function queueNim(payload) {
-      const next = nimQueue.then(() => nimFetch(payload));
+    function queueNim(payload, onDelta) {
+      const next = nimQueue.then(() => nimStream(payload, onDelta));
       nimQueue = next.catch(() => {});
       return next;
     }
@@ -237,7 +252,10 @@ data:
       textEl.textContent = '';
 
       try {
-        const text = await queueNim({ key: key, mode: 'dataset', dataset: window.DATASET });
+        const text = await queueNim(
+          { key: key, mode: 'dataset', dataset: window.DATASET },
+          partial => { textEl.textContent = partial; },
+        );
         textEl.textContent = text;
       } catch (e) {
         textEl.className = 'explain-error';
@@ -275,10 +293,13 @@ data:
       textEl.textContent = 'Analyzing…';
 
       try {
-        const text = await queueNim({
-          key: key, mode: 'row',
-          dataset: { label: dataset.label, headers: dataset.headers, row: row },
-        });
+        const text = await queueNim(
+          {
+            key: key, mode: 'row',
+            dataset: { label: dataset.label, headers: dataset.headers, row: row },
+          },
+          partial => { textEl.textContent = partial; },
+        );
         rowCache[idx] = text;
         textEl.textContent = text;
         btn.innerHTML = '✓';
@@ -480,6 +501,7 @@ data:
                 self.end_headers()
                 return
             length = int(self.headers.get("Content-Length", 0))
+            headers_sent = False
             try:
                 body = json.loads(self.rfile.read(length))
                 api_key = body.get("key", "")
@@ -538,7 +560,7 @@ data:
                     ],
                     "max_tokens": max_tokens,
                     "temperature": 0.4,
-                    "stream": False,
+                    "stream": True,
                 }).encode("utf-8")
                 req = urllib.request.Request(
                     "https://integrate.api.nvidia.com/v1/chat/completions",
@@ -550,10 +572,7 @@ data:
                     method="POST",
                 )
                 try:
-                    with urllib.request.urlopen(req, timeout=60) as r:
-                        nim_data = json.loads(r.read())
-                    text = nim_data.get("choices", [{}])[0].get("message", {}).get("content", "(no response)")
-                    self._send_json({"text": text})
+                    upstream = urllib.request.urlopen(req, timeout=110)
                 except urllib.error.HTTPError as he:
                     if he.code == 429:
                         retry_after = he.headers.get("Retry-After", "10")
@@ -567,10 +586,46 @@ data:
                             self.wfile.write(resp_body)
                         except BrokenPipeError:
                             pass
-                    else:
-                        self._send_json({"error": f"NIM API error {he.code}: {he.reason}"})
+                        return
+                    raise RuntimeError(f"NIM API error {he.code}: {he.reason}")
+
+                # Relay NIM's SSE stream to the browser as our own SSE.
+                self.send_response(200)
+                self.send_header("Content-Type", "text/event-stream")
+                self.send_header("Cache-Control", "no-cache")
+                self.send_header("X-Accel-Buffering", "no")
+                self.end_headers()
+                headers_sent = True
+                for raw in upstream:
+                    line = raw.decode("utf-8", "replace").strip()
+                    if not line.startswith("data:"):
+                        continue
+                    data = line[5:].strip()
+                    if data == "[DONE]":
+                        break
+                    try:
+                        obj = json.loads(data)
+                    except json.JSONDecodeError:
+                        continue
+                    piece = obj.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                    if piece and not self._emit({"delta": piece}):
+                        return
+                self._emit({"done": True})
             except Exception as e:
-                self._send_json({"error": str(e)})
+                if not headers_sent:
+                    self.send_response(200)
+                    self.send_header("Content-Type", "text/event-stream")
+                    self.send_header("Cache-Control", "no-cache")
+                    self.end_headers()
+                self._emit({"error": str(e)})
+
+        def _emit(self, obj: dict) -> bool:
+            try:
+                self.wfile.write(("data: " + json.dumps(obj) + "\n\n").encode("utf-8"))
+                self.wfile.flush()
+                return True
+            except (BrokenPipeError, ConnectionResetError):
+                return False
 
         def _send(self, body: str):
             data = body.encode("utf-8")
