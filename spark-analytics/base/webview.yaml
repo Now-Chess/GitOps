@@ -129,6 +129,16 @@ data:
                         font-size: 0.8rem; line-height: 1.6; border-bottom: 1px solid #30363d; }
     .row-explain-text { color: #c9d1d9; white-space: pre-wrap; }
     .row-explain-error { color: #f85149; }
+    .row-ask { display: flex; gap: 0.5rem; margin: 0.6rem 0 0.3rem; }
+    .row-q-input { flex: 1; background: #0d1117; border: 1px solid #30363d; border-radius: 6px;
+                   color: #c9d1d9; font-size: 0.8rem; padding: 5px 8px; }
+    .row-q-input:focus { outline: none; border-color: #388bfd; }
+    .row-ask-btn { background: #1f3a5f; border: 1px solid #388bfd; color: #58a6ff; border-radius: 6px;
+                   padding: 4px 12px; font-size: 0.78rem; cursor: pointer; white-space: nowrap; }
+    .row-ask-btn:hover { background: #263d6a; }
+    .row-ask-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .row-answer { color: #c9d1d9; white-space: pre-wrap; margin-top: 0.3rem; }
+    .row-answer.err { color: #f85149; }
     """
 
     JS = """
@@ -312,6 +322,52 @@ data:
       }
     }
 
+    async function askRow(idx) {
+      const key = getKey();
+      if (!key) { openSettings(); return; }
+
+      const inp = document.getElementById('row-q-' + idx);
+      const btn = document.getElementById('row-ask-btn-' + idx);
+      const out = document.getElementById('row-answer-' + idx);
+      if (!inp || !btn || !out) return;
+
+      const question = (inp.value || '').trim();
+      if (!question) { inp.focus(); return; }
+
+      const dataset = window.DATASET;
+      const row = dataset.rows && dataset.rows[idx];
+      if (!row) {
+        out.className = 'row-answer err';
+        out.textContent = 'Row data not available.';
+        return;
+      }
+
+      btn.disabled = true;
+      inp.disabled = true;
+      const label = btn.textContent;
+      btn.innerHTML = '<span class="spinner"></span>';
+      out.className = 'row-answer';
+      out.textContent = 'Thinking…';
+
+      try {
+        const text = await queueNim(
+          {
+            key: key, mode: 'row', question: question,
+            dataset: { label: dataset.label, headers: dataset.headers, row: row },
+          },
+          partial => { out.textContent = partial; },
+        );
+        out.textContent = text;
+      } catch (e) {
+        out.className = 'row-answer err';
+        out.textContent = e.message;
+      } finally {
+        btn.disabled = false;
+        inp.disabled = false;
+        btn.textContent = label;
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       updateSettingsBtn();
       updateNoKeyHint();
@@ -459,6 +515,12 @@ data:
                     f"<tr class='row-expand-tr' id='row-expand-{i}' style='display:none'>"
                     f"<td colspan='{num_cols + 1}'>"
                     f"<span id='row-explain-{i}'></span>"
+                    f"<div class='row-ask'>"
+                    f"<input class='row-q-input' id='row-q-{i}' placeholder='Ask a question about this row…' "
+                    f"onkeydown='if(event.key===\"Enter\")askRow({i})' />"
+                    f"<button class='row-ask-btn' id='row-ask-btn-{i}' onclick='askRow({i})'>Ask</button>"
+                    f"</div>"
+                    f"<div class='row-answer' id='row-answer-{i}'></div>"
                     f"</td></tr>"
                 )
             else:
@@ -516,21 +578,38 @@ data:
                 if mode == "row":
                     row = dataset.get("row", [])
                     row_desc = ", ".join(f"{h}: {v}" for h, v in zip(headers, row))
-                    system_prompt = (
-                        "You are a chess analytics expert. Analyze a single data entry from a chess analytics dataset. "
-                        "Be specific and insightful — 3-4 sentences. "
-                        "If the entry involves a chess opening (ECO code or opening name present), explain the opening's "
-                        "strategic ideas, strengths and weaknesses, and why players choose it. "
-                        "For player data, explain what the stats reveal about their playing style. "
-                        "For other types, explain what makes this entry notable."
-                    )
-                    user_prompt = (
-                        f"Dataset: \"{label}\"\n"
-                        f"Columns: {', '.join(headers)}\n\n"
-                        f"Entry to analyze: {row_desc}\n\n"
-                        "Provide a detailed, chess-specific analysis of this entry."
-                    )
-                    max_tokens = 300
+                    question = str(body.get("question", "")).strip()
+                    if question:
+                        system_prompt = (
+                            "You are a chess analytics expert. Answer the user's question about a single "
+                            "data entry from a chess analytics dataset. Be specific, accurate and concise. "
+                            "Ground your answer in the entry's values and in chess knowledge. "
+                            "If the question cannot be answered from the entry, say so."
+                        )
+                        user_prompt = (
+                            f"Dataset: \"{label}\"\n"
+                            f"Columns: {', '.join(headers)}\n\n"
+                            f"Entry: {row_desc}\n\n"
+                            f"Question: {question}\n\n"
+                            "Answer:"
+                        )
+                        max_tokens = 400
+                    else:
+                        system_prompt = (
+                            "You are a chess analytics expert. Analyze a single data entry from a chess analytics dataset. "
+                            "Be specific and insightful — 3-4 sentences. "
+                            "If the entry involves a chess opening (ECO code or opening name present), explain the opening's "
+                            "strategic ideas, strengths and weaknesses, and why players choose it. "
+                            "For player data, explain what the stats reveal about their playing style. "
+                            "For other types, explain what makes this entry notable."
+                        )
+                        user_prompt = (
+                            f"Dataset: \"{label}\"\n"
+                            f"Columns: {', '.join(headers)}\n\n"
+                            f"Entry to analyze: {row_desc}\n\n"
+                            "Provide a detailed, chess-specific analysis of this entry."
+                        )
+                        max_tokens = 300
                 else:
                     sample = dataset.get("sample", [])
                     rows_text = "\n".join(
