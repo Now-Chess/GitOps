@@ -209,7 +209,7 @@ data:
         }
         const reader = resp.body.getReader();
         const dec = new TextDecoder();
-        const SEP = String.fromCharCode(10, 10);  // "\n\n" — avoids YAML backslash escaping
+        const SEP = String.fromCharCode(10, 10);  // SSE frame separator (two newlines)
         let buf = '', full = '';
         for (;;) {
           const { done, value } = await reader.read();
