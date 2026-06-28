@@ -84,7 +84,7 @@ images:
 - name: ghcr.io/now-chess/now-chess-systems/core
   newTag: 0.53.0-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/frontend
-  newTag: 0.6.3-x86_v2
+  newTag: 0.6.4-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/io
   newTag: 0.23.0-x86_v2
 - name: ghcr.io/now-chess/now-chess-systems/official-bots
